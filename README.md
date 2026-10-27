@@ -50,7 +50,7 @@ python -m pytest
 
 核心模型只依赖 PyTorch 和 NumPy。`data` 提供采样与分类指标所需依赖，`plots` 用于重画图，`dev` 用于测试。
 
-本地 CPU 的16项测试已通过；同一历史权重在四种 walk 预算下的活动前向与旧实现完全一致。范围与记录见 [VALIDATION.md](docs/VALIDATION.md)。
+本地 CPU 的17项测试已通过；同一历史权重在四种 walk 预算下的活动前向与旧实现完全一致。范围与记录见 [VALIDATION.md](docs/VALIDATION.md)。
 
 ## 直接使用模型
 
@@ -87,6 +87,8 @@ python -m gpm_more.cli autotune --plan configs/autotune.example.json --output ru
 ```
 
 先在计划中填写数据和预训练权重的位置。队列保存训练代码快照、配置、日志和实时汇总，支持中断恢复，并限制为单个GPU训练进程。回归任务按R²选配置，二分类按AP，多分类按准确率；测试集不参与选择。完整说明、停止方式与预训练资产要求见 [AUTOTUNE.md](docs/AUTOTUNE.md)。
+
+自动搜索强制启用确定性执行。本机已在ArtNet和Tolokers上分别验证：反馈切换前400步，两次独立GPU进程的模型、优化器状态和预测完全一致。
 
 ## 重画已有结果
 

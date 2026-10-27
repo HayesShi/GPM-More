@@ -24,6 +24,14 @@ def fake_inventory(_):
     return [{"dataset": "example", "task": "regression"}]
 
 
+def test_autotune_rejects_nondeterministic_execution(tmp_path):
+    path, plan = plan_fixture(tmp_path)
+    plan['base_config']['deterministic'] = False
+    path.write_text(json.dumps(plan), encoding='utf8')
+    with pytest.raises(ValueError, match='deterministic execution'):
+        load_plan(path)
+
+
 def write_result(job, folder, *, complete=True):
     folder.mkdir(exist_ok=True)
     (folder / "config.json").write_text(json.dumps(job["config"]), encoding="utf8")

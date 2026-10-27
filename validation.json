@@ -39,11 +39,105 @@
   "CUDA_initialized": false,
   "autotune_extension_checks": {
     "date": "2026-10-28",
-    "full_pytest_passed": 16,
+    "full_pytest_passed": 17,
     "queue_selection_resume_and_locking": "passed",
     "strict_encoder_transfer_and_head_reset": "passed",
     "pretraining_asset_relocation": "passed",
-    "live_experiment_results": "Stored separately from engineering checks"
+    "live_experiment_results": "Stored separately from engineering checks",
+    "deterministic_cuda_prefix": {
+      "seed": 0,
+      "updates": 400,
+      "schedule_horizon": 1000,
+      "purpose": "engineering same-seed prefix matching; excluded from hyperparameter selection",
+      "cases": {
+        "artnet-views": {
+          "identical": true,
+          "through_update": 400,
+          "exact_checkpoint_fields": [
+            "model_state",
+            "optimizer",
+            "scheduler",
+            "rng",
+            "history",
+            "local_steps",
+            "best_state",
+            "best_metrics",
+            "best_update",
+            "update",
+            "execution",
+            "model_config",
+            "data_identity",
+            "initialization"
+          ],
+          "validation_prediction_updates_exact": [
+            0,
+            50,
+            100,
+            150,
+            200,
+            250,
+            300,
+            350,
+            400
+          ],
+          "execution": {
+            "deterministic_algorithms": true,
+            "cublas_workspace_config": ":4096:8",
+            "cudnn_deterministic": true,
+            "torch_version": "2.5.1+cu121",
+            "cuda_version": "12.1"
+          },
+          "model_max_abs_diff": 0.0,
+          "optimizer_max_abs_diff": 0.0,
+          "prediction_max_abs_diff": 0.0,
+          "history_exact_equal": true,
+          "step_logs_exact_equal": true
+        },
+        "tolokers-2": {
+          "identical": true,
+          "through_update": 400,
+          "exact_checkpoint_fields": [
+            "model_state",
+            "optimizer",
+            "scheduler",
+            "rng",
+            "history",
+            "local_steps",
+            "best_state",
+            "best_metrics",
+            "best_update",
+            "update",
+            "execution",
+            "model_config",
+            "data_identity",
+            "initialization"
+          ],
+          "validation_prediction_updates_exact": [
+            0,
+            50,
+            100,
+            150,
+            200,
+            250,
+            300,
+            350,
+            400
+          ],
+          "execution": {
+            "deterministic_algorithms": true,
+            "cublas_workspace_config": ":4096:8",
+            "cudnn_deterministic": true,
+            "torch_version": "2.5.1+cu121",
+            "cuda_version": "12.1"
+          },
+          "model_max_abs_diff": 0.0,
+          "optimizer_max_abs_diff": 0.0,
+          "prediction_max_abs_diff": 0.0,
+          "history_exact_equal": true,
+          "step_logs_exact_equal": true
+        }
+      }
+    }
   },
   "standalone_release_checks": {
     "date": "2026-10-28",

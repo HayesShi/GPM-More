@@ -27,6 +27,16 @@ same boundary in both families. Each candidate trains for all 1,000 updates;
 validation uses 12 walks every 50 updates, including the initial state. All other
 model and optimizer settings remain fixed.
 
+Fixed random seeds alone did not preserve the CUDA training prefix in a local
+matched-feedback check. The queue therefore requires deterministic execution. It sets
+`CUBLAS_WORKSPACE_CONFIG=:4096:8` before CUDA initialization, enables
+`torch.use_deterministic_algorithms(True)` and cuDNN deterministic kernels, and
+disables cuDNN benchmarking and TF32. Separate full and late-stop runs
+with the same seed and LR recipe must have exactly matching training prefixes
+through the feedback-switch boundary. Execution settings are saved in complete
+checkpoints and checked on resume. Unsupported deterministic operations raise an
+error instead of silently continuing with a different prefix.
+
 Only seed 0 selects hyperparameters. After every search candidate for a dataset
 completes successfully, the queue freezes one winner per feedback family in
 `selections/<dataset>.json`. The primary score is best validation R2 for

@@ -10,6 +10,7 @@ import copy
 import csv
 import json
 import math
+import os
 import random
 import time
 from pathlib import Path
@@ -33,6 +34,7 @@ DEFAULTS = {
     "feedback": {"mode": "full", "alpha": 1., "stop_after": 400},
     "late_lr": {"after": 400, "factor": 1.}, "model": {},
     "label_smoothing": .05,
+    "deterministic": True,
 }
 
 
@@ -53,6 +55,8 @@ def resolved_config(path_or_mapping):
             raise ValueError(f"{key} must be a positive integer")
     if not isinstance(config["seed"], int) or not isinstance(config["warmup"], int):
         raise ValueError("seed and warmup must be integers")
+    if not isinstance(config["deterministic"], bool):
+        raise ValueError("deterministic must be a boolean")
     if config["warmup"] < 0 or config["lr"] <= 0 or config["grad_clip"] <= 0:
         raise ValueError("warmup must be nonnegative; lr/grad_clip must be positive")
     if config["weight_decay"] < 0 or not 0 <= config["label_smoothing"] <= 1:
@@ -159,6 +163,21 @@ def initialize_weights(model, path, *, reset_head=False, seed=0):
 def _sync(device):
     if device.type == "cuda":
         torch.cuda.synchronize(device)
+
+
+def configure_execution(deterministic=True):
+    """Configure reproducible kernels before creating any CUDA state."""
+    if deterministic and os.environ.get("CUBLAS_WORKSPACE_CONFIG") not in {":4096:8", ":16:8"}:
+        if torch.cuda.is_initialized():
+            raise RuntimeError("Set CUBLAS_WORKSPACE_CONFIG=:4096:8 before initializing CUDA")
+        os.environ["CUBLAS_WORKSPACE_CONFIG"] = ":4096:8"
+    torch.use_deterministic_algorithms(deterministic)
+    torch.backends.cudnn.deterministic = deterministic
+    torch.backends.cudnn.benchmark = False
+    return {"deterministic_algorithms": torch.are_deterministic_algorithms_enabled(),
+            "cublas_workspace_config": os.environ.get("CUBLAS_WORKSPACE_CONFIG"),
+            "cudnn_deterministic": torch.backends.cudnn.deterministic,
+            "torch_version": str(torch.__version__), "cuda_version": torch.version.cuda}
 
 
 def _optimizer(model, config):
@@ -274,6 +293,7 @@ def train(data_dir, output_dir, config_path, device="cpu", resume=None,
     """
     call_start = time.perf_counter()
     config = resolved_config(config_path)
+    execution = configure_execution(config["deterministic"])
     if resume is not None and init_weights is not None:
         raise ValueError("Choose resume or weight initialization, not both")
     if reset_head and (init_weights is None or resume is not None):
@@ -302,6 +322,8 @@ def train(data_dir, output_dir, config_path, device="cpu", resume=None,
             raise ValueError("Resume configuration, architecture, or dataset identity differs")
         if saved["device_type"] != device.type:
             raise ValueError("Exact resume requires the same device type")
+        if saved.get("execution") != execution:
+            raise ValueError("Exact resume requires the same deterministic execution settings")
         if (output / "latest.pt").exists():
             current = torch.load(output / "latest.pt", map_location="cpu", weights_only=True)
             if current["update"] != saved["update"] or current["config"] != saved["config"]:
@@ -368,6 +390,7 @@ def train(data_dir, output_dir, config_path, device="cpu", resume=None,
     def payload():
         return {"format": "gpm-more-checkpoint-v1", "update": update, "config": config,
                 "model_config": model_identity, "data_identity": identity, "device_type": device.type,
+                "execution": execution,
                 "model_state": model.state_dict(), "optimizer": optimizer.state_dict(),
                 "scheduler": scheduler.state_dict(), "rng": _rng_capture(rng, device),
                 "history": history, "local_steps": local_steps, "best_state": best_state,
@@ -465,6 +488,7 @@ def train(data_dir, output_dir, config_path, device="cpu", resume=None,
               "this_call_wall_seconds": time.perf_counter() - wall_start,
               "logical_backward_passes_total": sum(row["logical_backward_passes"] for row in local_steps),
               "test_labels_read": False, "initialization": initialization}
+    result["execution"] = execution
     result["stop_reason"] = stop_reason
     _save_json(output / "metrics.json", result)
     return result

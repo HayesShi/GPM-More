@@ -39,5 +39,6 @@ def test_cli_prepares_and_trains_without_external_assets(tmp_path):
     metrics = json.loads((output / 'metrics.json').read_text(encoding='utf8'))
     assert metrics['complete'] and metrics['completed_update'] == 2
     assert metrics['test_labels_read'] is False
+    assert metrics['execution']['deterministic_algorithms'] is True
     assert set(metrics['last_validation']) == {'R2', 'MSE'}
     assert (output / 'latest.pt').exists() and (output / 'best.pt').exists()

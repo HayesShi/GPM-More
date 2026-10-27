@@ -123,6 +123,8 @@ def load_plan(path):
     if len(plan["learning_rates"]) * len(plan["late_lr_factors"]) * 2 > 12:
         raise ValueError("At most twelve search candidates per dataset")
     plan["base_config"] = resolved_config(plan["base_config"])
+    if not plan["base_config"]["deterministic"]:
+        raise ValueError("Autotune comparisons require deterministic execution")
     if plan["stop_after"] >= plan["base_config"]["steps"]:
         raise ValueError("Feedback stop must precede the training horizon")
     plan.setdefault("min_free_gb", 2.)
@@ -448,6 +450,7 @@ def run_queue(plan_path, output_dir, *, _executor=None, _inspect=inspect_inputs)
                 returncode = _executor(job, folder, config_path, command)
             else:
                 environment = {**os.environ, "PYTHONUNBUFFERED": "1",
+                    "CUBLAS_WORKSPACE_CONFIG": ":4096:8",
                     "OMP_NUM_THREADS": str(plan["cpu_threads"]), "MKL_NUM_THREADS": str(plan["cpu_threads"]),
                     "OPENBLAS_NUM_THREADS": str(plan["cpu_threads"])}
                 source = str(snapshot)
