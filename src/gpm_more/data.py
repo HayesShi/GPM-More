@@ -40,7 +40,7 @@ def selected_labels(path: Path, ids: np.ndarray, node_count: int):
 
 
 def prepare(graph_path, output, *, task='regression', name='custom', seed=0,
-            bank=None, chunk_size=512, standardize_targets=False):
+            bank=None, chunk_size=512, standardize_targets=False, split_index=0):
     """Prepare an already feature-preprocessed NPZ graph, reusing or sampling walks.
 
     Graph keys: x, edge_index, train_mask, val_mask, y. Alternatively provide
@@ -52,16 +52,31 @@ def prepare(graph_path, output, *, task='regression', name='custom', seed=0,
         raise FileExistsError('Choose a new prepared-data directory')
     if task not in {'regression', 'binary_classification', 'multiclass_classification'}:
         raise ValueError('Unsupported task')
+    if not isinstance(split_index, int) or split_index < 0:
+        raise ValueError('split_index must be a nonnegative integer')
+    source_split = {'column': split_index, 'columns': 1}
     with np.load(graph_path, allow_pickle=False) as graph:
         x = np.asarray(graph['x'], dtype=np.float32)
         edge_index = np.asarray(graph['edge_index'])
         if {'train_ids', 'val_ids', 'train_y', 'val_y'}.issubset(graph.files):
+            if split_index != 0:
+                raise ValueError('Explicit IDs provide a single split')
             train_ids = np.asarray(graph['train_ids'], dtype=np.int64)
             val_ids = np.asarray(graph['val_ids'], dtype=np.int64)
             train_y, val_y = graph['train_y'].copy(), graph['val_y'].copy()
         else:
-            train_ids = np.flatnonzero(graph['train_mask'])
-            val_ids = np.flatnonzero(graph['val_mask'])
+            train_mask, val_mask = graph['train_mask'], graph['val_mask']
+            if train_mask.shape != val_mask.shape or train_mask.shape[0] != len(x):
+                raise ValueError('Train/validation masks must match the graph')
+            if train_mask.ndim == 2:
+                if split_index >= train_mask.shape[1]:
+                    raise ValueError('split_index exceeds the available mask columns')
+                source_split['columns'] = train_mask.shape[1]
+                train_mask, val_mask = train_mask[:, split_index], val_mask[:, split_index]
+            elif train_mask.ndim != 1 or split_index != 0:
+                raise ValueError('Expected one-dimensional masks or an explicit mask column')
+            train_ids = np.flatnonzero(train_mask)
+            val_ids = np.flatnonzero(val_mask)
             train_y = selected_labels(graph_path, train_ids, len(x))
             val_y = selected_labels(graph_path, val_ids, len(x))
     if x.ndim != 2 or not np.isfinite(x).all():
@@ -131,6 +146,7 @@ def prepare(graph_path, output, *, task='regression', name='custom', seed=0,
                 'train_roots': len(train_ids), 'val_roots': len(val_ids),
                 'labels': 'train_and_validation_only', 'test_labels_decoded': False,
                 'target_standardization': transform, 'observations': observation}
+    metadata['source_split'] = source_split
     (output/'metadata.json').write_text(json.dumps(metadata, indent=2), encoding='utf8')
     return metadata
 

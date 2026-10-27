@@ -13,7 +13,7 @@ import subprocess
 import sys
 import time
 
-from .train import initialize_weights, resolved_config
+from .train import _replace_file, initialize_weights, resolved_config
 
 
 def _now():
@@ -28,7 +28,7 @@ def _write(path, value):
     path = Path(path)
     temporary = path.with_suffix(path.suffix + ".tmp")
     temporary.write_text(json.dumps(value, indent=2, ensure_ascii=False, allow_nan=False), encoding="utf8")
-    temporary.replace(path)
+    _replace_file(temporary, path)
 
 
 def _process_alive(pid):
@@ -59,6 +59,14 @@ def _process_alive(pid):
         return True
 
 
+class LockBusyError(RuntimeError):
+    """A cooperating queue owns the requested OS lock."""
+
+
+class ActiveChildError(RuntimeError):
+    """A previous worker's training child has not exited."""
+
+
 class QueueLock:
     """OS advisory lock; stale files never prevent a restart after a crash.
 
@@ -87,7 +95,7 @@ class QueueLock:
         except OSError as error:
             self.stream.close()
             self.stream = None
-            raise RuntimeError(f"Another queue or trainer holds {self.path}") from error
+            raise LockBusyError(f"Another queue or trainer holds {self.path}") from error
         return self
 
     def __exit__(self, *_):
@@ -151,6 +159,54 @@ def load_plan(path):
     return plan
 
 
+def validate_pretraining_source(checkpoint, completion, path, dataset, seed, nodes):
+    """Accept only two explicit historical structural-pretraining protocols."""
+    if checkpoint.get("dataset") != dataset or checkpoint.get("seed") != seed:
+        raise ValueError(f"Pretraining dataset or seed differs: {path}")
+    if completion.get("complete") is not True or completion.get("dataset") != dataset or completion.get("seed") != seed:
+        raise ValueError(f"Pretraining completion record differs: {path.parent}")
+    schema = checkpoint.get("schema")
+    if schema == "natural-pattern-checkpoint-v1":
+        if (checkpoint.get("phase") != "pretrain" or not 1 <= checkpoint.get("step", 0) <= 1000
+                or checkpoint.get("test_labels_read") is not False
+                or completion.get("phase") != "pretrain" or completion.get("steps") != 1000
+                or completion.get("best_step") != checkpoint["step"]
+                or completion.get("family") != checkpoint.get("family")
+                or completion.get("test_labels_read") is not False
+                or str(completion.get("checkpoint", "")).replace("\\", "/").rsplit("/", 1)[-1] != path.name):
+            raise ValueError(f"Structural-pretraining completion record differs: {path}")
+        return {"phase": "pretrain", "selected_step": checkpoint["step"],
+                "completed_pretrain_steps": completion["steps"], "family": checkpoint.get("family"),
+                "source_selection": "structural_validation_risk", "test_used_for_source_selection": False,
+                "test_labels_read": False}
+    if schema == "paper-aligned-natural-gpm-v1":
+        execution = checkpoint.get("protocol", {}).get("execution", {})
+        expected = {"method": "incidence_rotation", "hidden_dim": 256, "pretrain_epochs": 100,
+                    "pretrain_lr": .0003, "optimizer": "AdamW", "schedule": "constant",
+                    "logical_batch_size": 256, "early_stopping": False,
+                    "pretrain_roots": "all_nodes_unlabeled_full_graph_each_epoch_shuffled_without_replacement"}
+        expected_updates = ((nodes + 255) // 256) * 100
+        if (path.name != "latest.pt" or checkpoint.get("method") != "incidence_rotation"
+                or checkpoint.get("epoch") != 100 or checkpoint.get("updates") != expected_updates
+                or checkpoint.get("test_used_for_selection") is not False
+                or checkpoint.get("initialization") != "independent_from_scratch_no_task_checkpoint_warmstart"
+                or any(execution.get(key) != value for key, value in expected.items())
+                or completion.get("method") != "incidence_rotation"
+                or completion.get("pretrain_epochs_completed") != 100
+                or completion.get("pretrain_updates") != expected_updates
+                or completion.get("test_used_for_selection") is not False
+                or not {"optimizer", "numpy_rng_state", "torch_rng_state", "cuda_rng_states", "python_rng_state"}.issubset(checkpoint)):
+            raise ValueError(f"Expected the fixed final-epoch100 structural-pretraining resume state: {path}")
+        return {"phase": "structural_pretraining", "completed_pretrain_epochs": 100,
+                "completed_pretrain_steps": expected_updates, "selected_epoch": 100,
+                "family": "incidence_rotation", "source_selection": "fixed_final_epoch100",
+                "completion_recorded_checkpoint_role": "historical_validation_selected_file; actual_transfer_uses_final_resume_path",
+                "test_used_for_source_selection": False,
+                "pretraining_probe_rng_interaction": execution.get("probe_rng_interaction"),
+                "historical_test_evaluation_after_encoder_selection": True}
+    raise ValueError(f"Unsupported structural-pretraining checkpoint schema: {schema}")
+
+
 def inspect_inputs(plan):
     """Validate real prepared data and all active pretrained tensor shapes on CPU."""
     import torch
@@ -165,33 +221,21 @@ def inspect_inputs(plan):
         for seed in plan["seeds"]:
             path = Path(dataset["init_weights"][str(seed)])
             checkpoint = torch.load(path, map_location="cpu", weights_only=True)
-            if (checkpoint.get("schema") != "natural-pattern-checkpoint-v1"
-                    or checkpoint.get("phase") != "pretrain" or not 1 <= checkpoint.get("step", 0) <= 1000
-                    or checkpoint.get("dataset") != dataset["name"]
-                    or checkpoint.get("seed") != seed or checkpoint.get("test_labels_read") is not False):
-                raise ValueError(f"Not a matching completed structural-pretraining checkpoint: {path}")
             completion_path = path.parent / "complete.json"
             completion = _read(completion_path)
-            if (completion.get("complete") is not True or completion.get("phase") != "pretrain"
-                    or completion.get("steps") != 1000 or completion.get("best_step") != checkpoint["step"]
-                    or completion.get("dataset") != dataset["name"] or completion.get("seed") != seed
-                    or completion.get("family") != checkpoint.get("family")
-                    or completion.get("test_labels_read") is not False
-                    or str(completion.get("checkpoint", "")).replace("\\", "/").rsplit("/", 1)[-1] != path.name):
-                raise ValueError(f"Structural-pretraining completion record differs: {completion_path}")
+            source_metadata = validate_pretraining_source(checkpoint, completion, path,
+                                                         dataset["name"], seed, len(data.x))
             model = RelationalPatternModel(ModelConfig(**architecture))
             initialization = initialize_weights(model, path, reset_head=True, seed=seed)
             ignored = initialization["ignored_inactive_keys"]
             stat = path.stat()
             sources.append({"path": str(path), "bytes": stat.st_size, "mtime_ns": stat.st_mtime_ns,
-                            "schema": checkpoint["schema"], "phase": checkpoint["phase"],
-                            "selected_step": checkpoint["step"], "completed_pretrain_steps": completion["steps"],
+                            "schema": checkpoint["schema"], **source_metadata,
                             "completion_path": str(completion_path),
                             "completion_recorded_checkpoint": completion["checkpoint"],
-                            "family": checkpoint.get("family"),
                             "pretraining_seed": seed, "fine_tuning_seed": seed,
                             "task_head_seed": 70000000 + seed, "active_tensors": len(model.state_dict()),
-                            "ignored_inactive_keys": ignored, "test_labels_read": False})
+                            "ignored_inactive_keys": ignored, "current_training_test_labels_read": False})
             del checkpoint, model
         inventory.append({"dataset": dataset["name"], "data": dataset["data"],
                           "metadata": data.metadata, "feature_shape": list(data.x.shape),
@@ -324,7 +368,7 @@ def _summary(output, plan, jobs, state):
     writer.writerows(rows)
     temporary = output / "summary.csv.tmp"
     temporary.write_text(buffer.getvalue(), encoding="utf8")
-    temporary.replace(output / "summary.csv")
+    _replace_file(temporary, output / "summary.csv")
     lines = ["# Per-dataset feedback tuning", "", f"Status: {state['status']}; "
              f"completed {result['complete_jobs']}/{result['maximum_jobs']}; "
              f"failed {result['failed_jobs']}; used {state['wall_seconds']/3600:.2f} hours.", "",
@@ -344,11 +388,11 @@ def _summary(output, plan, jobs, state):
                       f"late-stop winner `{selection['winners']['late_stop']['job_id']}`.",
                       f"Same-LR/same-late-LR seed-0 full counterpart: `{selection['late_stop_matched_full_job']}`."])
     (output / "SUMMARY.md.tmp").write_text("\n".join(lines) + "\n", encoding="utf8")
-    (output / "SUMMARY.md.tmp").replace(output / "SUMMARY.md")
+    _replace_file(output / "SUMMARY.md.tmp", output / "SUMMARY.md")
     return result
 
 
-def run_queue(plan_path, output_dir, *, _executor=None, _inspect=inspect_inputs):
+def run_queue(plan_path, output_dir, *, _executor=None, _inspect=inspect_inputs, _package_source=None):
     """Run or resume an immutable finite plan; completed jobs are never relaunched."""
     plan, output = load_plan(plan_path), Path(output_dir).resolve()
     output.mkdir(parents=True, exist_ok=True)
@@ -360,7 +404,7 @@ def run_queue(plan_path, output_dir, *, _executor=None, _inspect=inspect_inputs)
         if lease_path.exists():
             lease = _read(lease_path)
             if lease.get("child_pid") and _process_alive(lease["child_pid"]):
-                raise RuntimeError(f"Previous GPU training child {lease['child_pid']} is still running")
+                raise ActiveChildError(f"Previous GPU training child {lease['child_pid']} is still running")
         if (output / "plan.json").exists():
             if _read(output / "plan.json") != plan:
                 raise ValueError("Plan differs from the frozen queue plan; use a new output directory")
@@ -372,7 +416,7 @@ def run_queue(plan_path, output_dir, *, _executor=None, _inspect=inspect_inputs)
         snapshot = output / "code_snapshot"
         if not snapshot.exists():
             snapshot.mkdir()
-            shutil.copytree(Path(__file__).resolve().parent, snapshot / "gpm_more",
+            shutil.copytree(_package_source or Path(__file__).resolve().parent, snapshot / "gpm_more",
                             ignore=shutil.ignore_patterns("__pycache__", "*.pyc"))
             _write(output / "code_snapshot_manifest.json", {
                 "created_utc": _now(), "package": "gpm_more", "files": [
@@ -382,7 +426,7 @@ def run_queue(plan_path, output_dir, *, _executor=None, _inspect=inspect_inputs)
             "schema": "gpm-more-queue-state-v1", "wall_seconds": 0., "jobs": {}, "status": "ready"}
         for key, record in state["jobs"].items():
             if record.get("status") == "running" and record.get("child_pid") and _process_alive(record["child_pid"]):
-                raise RuntimeError(f"Previous training child {record['child_pid']} is still running for {key}")
+                raise ActiveChildError(f"Previous training child {record['child_pid']} is still running for {key}")
         # Conservatively account for any unobserved interval after a worker crash.
         if state["status"] == "running" and "updated_utc" in state:
             state["wall_seconds"] += max(0., (datetime.now(timezone.utc) -

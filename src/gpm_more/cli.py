@@ -16,6 +16,7 @@ def main(argv=None):
     p.add_argument('--bank', help='Reuse an existing context/extra .npy cache instead of resampling')
     p.add_argument('--chunk-size', type=int, default=512)
     p.add_argument('--standardize-targets', action='store_true')
+    p.add_argument('--split-index', type=int, default=0, help='Column for a multi-split train/validation mask')
     p = sub.add_parser('train', help='Run a fresh or resumed supervised experiment')
     p.add_argument('--data', required=True)
     p.add_argument('--output', required=True)
@@ -30,21 +31,27 @@ def main(argv=None):
     p = sub.add_parser('autotune', help='Run a resumable per-dataset validation search')
     p.add_argument('--plan', required=True, help='Autotune JSON plan; see docs/AUTOTUNE.md')
     p.add_argument('--output', required=True)
+    p = sub.add_parser('dispatch', help='Wait for earlier campaigns and run a finite campaign list')
+    p.add_argument('--plan', required=True, help='Dispatcher JSON plan; see docs/AUTOTUNE.md')
+    p.add_argument('--output', required=True)
     args = parser.parse_args(argv)
     if args.command == 'prepare':
         from .data import prepare
         result = prepare(args.graph, args.output, task=args.task, name=args.name, seed=args.seed,
                          bank=args.bank, chunk_size=args.chunk_size,
-                         standardize_targets=args.standardize_targets)
+                         standardize_targets=args.standardize_targets, split_index=args.split_index)
     elif args.command == 'train':
         from .train import train
         result = train(args.data, args.output, args.config, device=args.device,
                        resume=args.resume, init_weights=args.init_weights,
                        reset_head=args.reset_head, max_updates=args.max_updates,
                        stop_file=args.stop_file, max_wall_seconds=args.max_wall_seconds)
-    else:
+    elif args.command == 'autotune':
         from .autotune import run_queue
         result = run_queue(args.plan, args.output)
+    else:
+        from .dispatch import run_dispatch
+        result = run_dispatch(args.plan, args.output)
     print(json.dumps(result, indent=2, allow_nan=False), flush=True)
 
 

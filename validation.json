@@ -150,5 +150,20 @@
     "archived_aggregate_figures_regenerated": true,
     "GraphLand_full_download_and_preprocessing_executed": false,
     "new_benchmark_training_executed": false
+  },
+  "dataset_expansion_checks": {
+    "date": "2026-10-28",
+    "full_pytest_passed": 22,
+    "added_datasets": [
+      "photo",
+      "pubmed",
+      "computers"
+    ],
+    "verified_final_epoch100_sources": 9,
+    "fixed_split_column": 0,
+    "mask_column_label_boundary": "passed",
+    "fixed_final_pretraining_validation": "passed",
+    "sequential_dispatch_wait_resume_and_locks": "passed",
+    "bounded_atomic_replace_retry": "passed"
   }
 }

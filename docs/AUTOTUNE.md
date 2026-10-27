@@ -20,6 +20,17 @@ completed pretraining updates and identify the saved structural-risk-selected
 step, which can precede update 1,000. Every active encoder tensor must exist and have the
 correct shape. Inactive historical tensors are listed in the inventory.
 
+The validator also supports `paper-aligned-natural-gpm-v1` structural pretraining
+for Photo, Pubmed, and Computers. These sources must be the `latest.pt` resume
+state at fixed final epoch 100, with the matching completed 100-epoch receipt,
+incidence_rotation configuration, constant pretraining LR, and independent source
+seed. The transferred checkpoint is not selected by a downstream validation probe.
+The historical receipt may name its validation-selected `best.pt`; the inventory
+distinguishes that recorded file from the actual final `latest.pt` transferred.
+Historical probes reset RNG streams and affect subsequent encoder dropout; this
+is recorded as source provenance. Probe heads receive frozen, detached encoder
+embeddings. The new optimizer never imports source optimizer or probe-head state.
+
 The example searches three base learning rates, two late learning-rate factors,
 and two feedback families: `full` and `late_stop` after update 400. This gives six
 candidates per family and twelve per dataset. Late LR scaling starts after the
@@ -100,3 +111,55 @@ Start-Process -FilePath python -ArgumentList '-m gpm_more.cli autotune --plan co
 
 The queue is a local validation experiment runner. It does not edit paper tables
 or schedule a test-set evaluation.
+
+## More datasets and sequential campaigns
+
+`configs/autotune.classification.example.json` defines the same twelve-candidate
+search for Photo, Pubmed, and Computers: 36 seed-0 search runs and twelve frozen
+confirmation runs. It uses user-supplied task caches and final structural
+pretraining sources. A two-dataset campaign followed by this three-dataset
+campaign covers five datasets without changing an existing frozen plan.
+
+For a graph NPZ containing train/validation mask matrices, select a column
+explicitly during preparation:
+
+```powershell
+python -m gpm_more.cli prepare --graph sources/photo/task.npz --output data/photo --name photo --task multiclass_classification --split-index 0 --seed 0
+```
+
+This decodes only the selected column's train/validation label rows. Keep the
+same original split column for all fine-tuning seeds so seed effects are not
+confounded with split changes. The historical Photo/Pubmed/Computers source
+caches contain three seed-42 low-label 10/10/80 splits. Column 0 is preserved for
+this protocol; raw official features are retained. Their earlier 128-SRW bank
+belongs to pretraining. This preparation generates a declared new 16-SRW/8-NBRW
+cache shared by every candidate and fine-tuning seed. The earlier official loader
+cached complete labels; that historical access is distinct from selected-row
+extraction and the current validation search.
+
+To queue additional campaigns behind an existing campaign:
+
+```powershell
+python -m gpm_more.cli dispatch --plan configs/dispatch.example.json --output runs/dispatcher
+```
+
+The dispatcher saves its resolved plan, copied campaign recipes, package snapshot,
+`state.json`, `summary.json`, `SUMMARY.md`, and transition log. Status reports
+include planned search/confirmation counts, the dispatcher PID, prerequisite
+queue PID, and active campaign. It checks prerequisites every two seconds in the
+example, waits for shared GPU locks, and runs one campaign at a time. Editing a
+referenced recipe while it waits cannot change its frozen copy. A restart rejects
+recipe changes and never restarts a campaign recorded as complete.
+
+A completed predecessor permits the next campaign. A terminal failed or
+wall-budget predecessor can also permit it when no stop file or training child
+remains; the predecessor's status remains visible. A predecessor with a
+`STOP_REQUESTED` file, low disk status, or an unfinished queue whose worker has
+exited holds dispatch for recovery. A busy GPU lock is a waiting state.
+
+Create `STOP_REQUESTED` inside the dispatcher output to stop waiting. During an
+active campaign it forwards the stop to that campaign's `STOP_REQUESTED` file,
+which stops at the next validation checkpoint. Remove both files before an
+authorized resume. The dispatcher never clears or bypasses a predecessor's stop
+file. Its own wall budget likewise requests a checkpoint stop in an active
+campaign; each campaign also keeps its separate frozen budget.

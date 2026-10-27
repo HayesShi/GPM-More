@@ -1,0 +1,9 @@
+{
+  "schema": "gpm-more-dispatch-v1",
+  "prerequisites": ["../runs/autotune"],
+  "campaigns": [
+    {"plan": "autotune.classification.example.json", "output": "../runs/classification"}
+  ],
+  "poll_seconds": 2,
+  "wall_hours": 12
+}

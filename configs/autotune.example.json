@@ -9,6 +9,15 @@
         "1": "../weights/artnet-views/seed1/pretrained.pt",
         "2": "../weights/artnet-views/seed2/pretrained.pt"
       }
+    },
+    {
+      "name": "tolokers-2",
+      "data": "../data/tolokers-2",
+      "init_weights": {
+        "0": "../weights/tolokers-2/seed0/pretrained.pt",
+        "1": "../weights/tolokers-2/seed1/pretrained.pt",
+        "2": "../weights/tolokers-2/seed2/pretrained.pt"
+      }
     }
   ],
   "base_config": {
@@ -33,5 +42,6 @@
   "wall_hours": 12,
   "cpu_threads": 4,
   "device": "cuda:0",
-  "min_free_gb": 2
+  "min_free_gb": 2,
+  "gpu_lock": "../runs/gpu0.lock"
 }

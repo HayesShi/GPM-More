@@ -1,11 +1,36 @@
 import json
+from pathlib import Path
 
 import numpy as np
 import pytest
 import torch
 
-from gpm_more.train import initialize_weights, task_metrics, train
+from gpm_more.train import _replace_file, _save_json, initialize_weights, task_metrics, train
 from gpm_more.model import ModelConfig, RelationalPatternModel
+
+
+def test_atomic_write_retries_transient_permission_error_and_keeps_permanent_error(tmp_path, monkeypatch):
+    original = Path.replace
+    calls = []
+    def flaky(path, destination):
+        calls.append(path)
+        if len(calls) == 1:
+            raise PermissionError('temporary Windows sharing violation')
+        return original(path, destination)
+    monkeypatch.setattr(Path, 'replace', flaky)
+    monkeypatch.setattr('gpm_more.train.time.sleep', lambda _: None)
+    target = tmp_path / 'state.json'
+    _save_json(target, {'status': 'running'})
+    assert json.loads(target.read_text()) == {'status': 'running'}
+    assert len(calls) == 2
+    def blocked(*_):
+        raise PermissionError('persistent access denial')
+    monkeypatch.setattr(Path, 'replace', blocked)
+    temporary = tmp_path / 'state.json.tmp'
+    temporary.write_text('new', encoding='utf8')
+    with pytest.raises(PermissionError, match='persistent'):
+        _replace_file(temporary, target, attempts=2)
+    assert json.loads(target.read_text()) == {'status': 'running'}
 
 
 def test_explicit_head_reset_restores_encoder_and_preserves_training_rng(tmp_path):

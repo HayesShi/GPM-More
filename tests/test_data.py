@@ -42,3 +42,19 @@ def test_fractional_validation_class_is_rejected_before_cache_creation(tmp_path)
     with pytest.raises(ValueError, match='nonnegative integers'):
         prepare(graph, destination, task='multiclass_classification')
     assert not destination.exists()
+
+
+def test_mask_column_zero_preserves_split_and_never_decodes_other_panel_labels(tmp_path):
+    graph = tmp_path / 'panels.npz'
+    np.savez(graph, x=np.eye(5, dtype=np.float32),
+             edge_index=np.array([[0, 1, 2, 3], [1, 2, 3, 4]]),
+             train_mask=np.array([[1, 0], [0, 0], [0, 0], [0, 1], [0, 0]], dtype=bool),
+             val_mask=np.array([[0, 0], [1, 0], [0, 0], [0, 0], [0, 1]], dtype=bool),
+             y=np.array([2., 3., np.nan, np.nan, np.nan]))
+    folder = tmp_path / 'prepared'
+    prepare(graph, folder, split_index=0)
+    data = PreparedData(folder)
+    np.testing.assert_array_equal(data.train_ids, [0])
+    np.testing.assert_array_equal(data.val_ids, [1])
+    np.testing.assert_array_equal(data.targets([0, 1]), [2., 3.])
+    assert data.metadata['source_split'] == {'column': 0, 'columns': 2}

@@ -110,16 +110,28 @@ def _cpu_tree(value):
     return copy.deepcopy(value)
 
 
+def _replace_file(temporary, path, *, attempts=20):
+    """Retry transient Windows read/replace sharing conflicts for a bounded time."""
+    for attempt in range(attempts):
+        try:
+            temporary.replace(path)
+            return
+        except PermissionError:
+            if attempt + 1 == attempts:
+                raise
+            time.sleep(min(.01 * 2 ** min(attempt, 5), .25))
+
+
 def _save_checkpoint(path, payload):
     temporary = path.with_suffix(path.suffix + ".tmp")
     torch.save(_cpu_tree(payload), temporary)
-    temporary.replace(path)
+    _replace_file(temporary, path)
 
 
 def _save_json(path, value):
     temporary = path.with_suffix(path.suffix + ".tmp")
     temporary.write_text(json.dumps(value, indent=2, ensure_ascii=False, allow_nan=False), encoding="utf8")
-    temporary.replace(path)
+    _replace_file(temporary, path)
 
 
 def initialize_weights(model, path, *, reset_head=False, seed=0):
@@ -155,7 +167,8 @@ def initialize_weights(model, path, *, reset_head=False, seed=0):
         initialization["task_head_seed"] = head_seed
     if isinstance(weights, dict):
         initialization["source_metadata"] = {key: weights[key] for key in
-            ("schema", "dataset", "family", "seed", "phase", "step", "test_labels_read")
+            ("schema", "dataset", "family", "method", "seed", "phase", "step", "epoch", "updates",
+             "test_labels_read", "test_used_for_selection", "initialization")
             if key in weights}
     return initialization
 

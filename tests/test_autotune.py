@@ -5,7 +5,8 @@ import os
 
 import pytest
 
-from gpm_more.autotune import QueueLock, _process_alive, inspect_inputs, load_plan, run_queue
+from gpm_more.autotune import (QueueLock, _process_alive, inspect_inputs, load_plan,
+                              run_queue, validate_pretraining_source)
 
 
 def plan_fixture(tmp_path):
@@ -30,6 +31,26 @@ def test_autotune_rejects_nondeterministic_execution(tmp_path):
     path.write_text(json.dumps(plan), encoding='utf8')
     with pytest.raises(ValueError, match='deterministic execution'):
         load_plan(path)
+
+
+def test_paper_aligned_source_requires_fixed_final_pretraining_epoch(tmp_path):
+    execution = {'method': 'incidence_rotation', 'hidden_dim': 256, 'pretrain_epochs': 100,
+        'pretrain_lr': .0003, 'optimizer': 'AdamW', 'schedule': 'constant',
+        'logical_batch_size': 256, 'early_stopping': False,
+        'pretrain_roots': 'all_nodes_unlabeled_full_graph_each_epoch_shuffled_without_replacement'}
+    source = {'schema': 'paper-aligned-natural-gpm-v1', 'dataset': 'photo', 'seed': 0,
+        'method': 'incidence_rotation', 'epoch': 100, 'updates': 3000,
+        'initialization': 'independent_from_scratch_no_task_checkpoint_warmstart',
+        'test_used_for_selection': False, 'protocol': {'execution': execution},
+        **{name: {} for name in ['optimizer', 'numpy_rng_state', 'torch_rng_state', 'cuda_rng_states', 'python_rng_state']}}
+    completion = {'complete': True, 'dataset': 'photo', 'seed': 0, 'method': 'incidence_rotation',
+        'pretrain_epochs_completed': 100, 'pretrain_updates': 3000, 'test_used_for_selection': False}
+    result = validate_pretraining_source(source, completion, tmp_path / 'latest.pt', 'photo', 0, 7650)
+    assert result['source_selection'] == 'fixed_final_epoch100'
+    with pytest.raises(ValueError, match='fixed final-epoch100'):
+        validate_pretraining_source({**source, 'epoch': 15}, completion, tmp_path / 'latest.pt', 'photo', 0, 7650)
+    with pytest.raises(ValueError, match='fixed final-epoch100'):
+        validate_pretraining_source(source, completion, tmp_path / 'best.pt', 'photo', 0, 7650)
 
 
 def write_result(job, folder, *, complete=True):

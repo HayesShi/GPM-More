@@ -1,0 +1,40 @@
+{
+  "schema": "gpm-more-autotune-v1",
+  "datasets": [
+    {
+      "name": "photo", "data": "../data/photo",
+      "init_weights": {
+        "0": "../weights/photo/seed0/latest.pt",
+        "1": "../weights/photo/seed1/latest.pt",
+        "2": "../weights/photo/seed2/latest.pt"
+      }
+    },
+    {
+      "name": "pubmed", "data": "../data/pubmed",
+      "init_weights": {
+        "0": "../weights/pubmed/seed0/latest.pt",
+        "1": "../weights/pubmed/seed1/latest.pt",
+        "2": "../weights/pubmed/seed2/latest.pt"
+      }
+    },
+    {
+      "name": "computers", "data": "../data/computers",
+      "init_weights": {
+        "0": "../weights/computers/seed0/latest.pt",
+        "1": "../weights/computers/seed1/latest.pt",
+        "2": "../weights/computers/seed2/latest.pt"
+      }
+    }
+  ],
+  "base_config": {
+    "steps": 1000, "warmup": 100, "batch_size": 128, "micro_batch_size": 32,
+    "train_budgets": [4, 8, 12, 16], "eval_budget": 12, "eval_every": 50,
+    "weight_decay": 0.01, "grad_clip": 1.0, "clip_policy": "common_full",
+    "label_smoothing": 0.05, "deterministic": true, "model": {}
+  },
+  "learning_rates": [0.0003, 0.0001, 0.001],
+  "late_lr_factors": [1.0, 0.1],
+  "stop_after": 400, "seeds": [0, 1, 2], "wall_hours": 12,
+  "cpu_threads": 4, "device": "cuda:0", "min_free_gb": 2,
+  "gpu_lock": "../runs/gpu0.lock"
+}
