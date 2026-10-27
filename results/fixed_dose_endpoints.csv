@@ -1,0 +1,7 @@
+method_label,alpha,all_lr_factor,clip_policy,best_R2,best_update,final_R2,final_MSE_standardized
+alpha0_common-full-clip_all-lr1,0.0,1.0,common-full-clip,0.47979605197906494,600,0.47097665071487427,0.5252653360366821
+alpha0.5_common-full-clip_all-lr1,0.5,1.0,common-full-clip,0.47979605197906494,600,0.4666454792022705,0.5295657515525818
+alpha1_common-full-clip_all-lr1,1.0,1.0,common-full-clip,0.47979605197906494,600,0.4642002582550049,0.5319936275482178
+alpha0_common-full-clip_all-lr0.1,0.0,0.1,common-full-clip,0.4926583766937256,650,0.48909854888916016,0.5072721838951111
+alpha0.5_common-full-clip_all-lr0.1,0.5,0.1,common-full-clip,0.492898166179657,650,0.4888042211532593,0.5075643658638
+alpha1_common-full-clip_all-lr0.1,1.0,0.1,common-full-clip,0.4929925203323364,650,0.48842430114746094,0.5079416632652283

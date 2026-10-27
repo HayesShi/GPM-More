@@ -1,0 +1,52 @@
+{
+  "scope": "CPU engineering parity; same historical active weights, three train roots, no labels or task metrics",
+  "source": "raw_sum256 reconstructed actual state600",
+  "upstream_GPM_revision": "2ed3ebf7df8d8401520e6ec3bdbd1c2b291b5784",
+  "device": "cpu",
+  "ignored_inactive_tensor_count": 42,
+  "cases": [
+    {
+      "walk_budget": 4,
+      "max_abs_prediction_difference": 0.0,
+      "max_abs_embedding_difference": 0.0,
+      "max_abs_closure_difference": 0.0,
+      "feedback_forward_identical": true
+    },
+    {
+      "walk_budget": 8,
+      "max_abs_prediction_difference": 0.0,
+      "max_abs_embedding_difference": 0.0,
+      "max_abs_closure_difference": 0.0,
+      "feedback_forward_identical": true
+    },
+    {
+      "walk_budget": 12,
+      "max_abs_prediction_difference": 0.0,
+      "max_abs_embedding_difference": 0.0,
+      "max_abs_closure_difference": 0.0,
+      "feedback_forward_identical": true
+    },
+    {
+      "walk_budget": 16,
+      "max_abs_prediction_difference": 0.0,
+      "max_abs_embedding_difference": 0.0,
+      "max_abs_closure_difference": 0.0,
+      "feedback_forward_identical": true
+    }
+  ],
+  "passed": true,
+  "historical_training_reproduced": false,
+  "CUDA_initialized": false,
+  "standalone_release_checks": {
+    "date": "2026-10-28",
+    "device": "cpu",
+    "pytest_passed": 11,
+    "pytest_seconds": 12.42,
+    "warning_count": 5,
+    "warning_scope": "PyTorch nested-tensor optimization unavailable for the retained odd walk-attention head count",
+    "CLI_fresh_sampling_and_two_update_training_passed": true,
+    "archived_aggregate_figures_regenerated": true,
+    "GraphLand_full_download_and_preprocessing_executed": false,
+    "new_benchmark_training_executed": false
+  }
+}

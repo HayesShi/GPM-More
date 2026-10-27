@@ -1,0 +1,32 @@
+{
+  "completed_steps": 200,
+  "full_choices": 99,
+  "stop_choices": 101,
+  "selection": {
+    "mean_full_minus_stop_MSE": 1.9651459937305992e-07,
+    "mean_selected_minus_rejected_MSE": -1.209052930068219e-05,
+    "mean_selected_minus_full_MSE": -6.143521950027625e-06,
+    "mean_selected_minus_stop_MSE": -5.947007350654565e-06,
+    "fraction_selection_agrees_with_lower_risk": 1.0,
+    "max_abs_exact_identity_residual": 1.0793232627093197e-16,
+    "min_abs_endpoint_difference": 2.2457963960720306e-07
+  },
+  "audit": {
+    "mean_full_minus_stop_MSE": 1.8475852990464115e-06,
+    "mean_selected_minus_rejected_MSE": 5.2309701945169044e-08,
+    "mean_selected_minus_full_MSE": -8.976377985506212e-07,
+    "mean_selected_minus_stop_MSE": 9.499475004957902e-07,
+    "fraction_selection_agrees_with_lower_risk": 0.495,
+    "max_abs_exact_identity_residual": 8.890457814381136e-17,
+    "min_abs_endpoint_difference": 6.057546225735067e-08
+  },
+  "probe_delta_correlation": -0.10286885680052738,
+  "comparison_scope": "Same-state local candidate contrasts, not separate training trajectories; 200 temporally dependent steps",
+  "test_labels_used": false,
+  "conditional_minus_current_stop_final_R2": 9.578466415399722e-05,
+  "conditional_minus_current_stop_best_R2": 0.0004304051399230957,
+  "stop_replay_minus_historical_final_R2": 6.55651092584808e-07,
+  "predeclared_continuation_threshold_R2": 0.001,
+  "passes_continuation_threshold": false,
+  "method_changes_inference": false
+}

@@ -1,0 +1,39 @@
+{
+  "scope": "Archived ArtNet-views seed-0 development experiments; aggregate evidence, not a standard GPM/G2PM benchmark table",
+  "label_policy": "Train labels for optimization; validation labels for reported evaluation; no test labels used",
+  "target_units": "Regression targets standardized with a train-label-only fitted scaler; MSE is in standardized target units",
+  "groups": [
+    {
+      "source_experiment": "rawsum_causal_core_20261027",
+      "configuration": "ArtNet-views seed0, shared original state400, 600 continuation updates to1000, base LR0.0003, original1000-step scheduler, logical128/micro32, K sampled4/8/12/16, validationK12, TF32off",
+      "files": ["training_interventions.csv", "forward_content_interventions.csv"],
+      "intervention_scope": "Training changes relation feedback and/or all-parameter LR; content changes are fixed-weight counterfactuals",
+      "comparison_boundary": "Total-step matching uses the controlled arm's current-state hypothetical native encoder displacement, not native per-layer steps or momentum trajectory"
+    },
+    {
+      "source_experiment": "rawsum_path_competition_20261027",
+      "configuration": "ArtNet-views seed0; actual states400/500/600/800; deterministicK12 local probes and native stochastic batches; short training uses reconstructed actual600 to800",
+      "files": ["local_path_exchange.csv", "fixed_dose_endpoints.csv", "fixed_dose_validation_curves.csv", "stochastic_paired_steps.csv", "stochastic_aggregates.csv", "mse_interaction_decomposition.csv"],
+      "intervention_scope": "Local directions use full train objective with validation diagnostics; 8 stochastic draws are fixed-state disposable paired steps; 6 fixed-dose cells are completed training continuations",
+      "comparison_boundary": "Replayed state600 differs numerically from missing historical600; use its own optimizer and RNG, not historical weights paired with reconstructed moments"
+    },
+    {
+      "source_experiment": "rawsum_conditional_feedback_20261028",
+      "configuration": "ArtNet-views seed0; identical actual600 parameters, Adam, scheduler and native sampler/dropout state; two200-step arms to800; all-parameter LRfactor0.1; full-gradient common clipping",
+      "files": ["conditional_endpoints.csv", "conditional_validation_curves.csv", "conditional_probe_steps.csv", "conditional_probe_mechanism.csv", "conditional_probe_summary.json", "conditional_compute.json"],
+      "intervention_scope": "Two exact full/stop AdamW candidates, selected by Q128 TRAIN roots excluding the gradient batch; commit whole selected weights and optimizer state; Qaudit128 TRAIN roots exclude gradient batch and Q and never select",
+      "comparison_boundary": "Main endpoint800; best only600/650/700/750/800; historical full/stop reference rows labeled; Q and Qaudit are disjoint root sets, not statistically independent graphs",
+      "decision": "Final gain over matched fixed stop0.0000957846641541R2; below predeclared0.001 engineering continuation threshold; controller not retained"
+    }
+  ],
+  "public_contents": "Aggregate numerical results and deterministic plots only; no node IDs, per-node labels, features, checkpoints, local absolute paths, prompt logs or credentials",
+  "plot_entry": "scripts/plot_findings.py",
+  "figure_sources": {
+    "findings.A": "forward_content_interventions.csv: original versus within_collision_shuffle_direction_keep_norm, three fixed states",
+    "findings.B": "training_interventions.csv: native/detach_global by LRfactor1/0.1, best_validation_R2",
+    "findings.C": "conditional_probe_steps.csv: Q_full_minus_stop_MSE versus audit_full_minus_stop_MSE",
+    "findings.D": "conditional_validation_curves.csv: current conditional and stop, historical full dotted",
+    "local_paths": "local_path_exchange.csv: validation, scale1, pure relation and natural Adam increment",
+    "probe_transfer": "conditional_probe_steps.csv: cumulative mean selected_minus_rejected_MSE for Q and Qaudit"
+  }
+}

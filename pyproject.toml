@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "gpm-more"
+version = "0.1.0"
+description = "Graph Pattern Modeling with independently controlled relational feedback"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {file = "LICENSE"}
+dependencies = ["numpy>=1.24", "torch>=2.4"]
+
+[project.optional-dependencies]
+data = ["scipy>=1.10", "numba>=0.59", "scikit-learn>=1.3"]
+graphland = ["pandas>=2", "PyYAML>=6", "scikit-learn>=1.5", "torch-geometric>=2.6"]
+plots = ["matplotlib>=3.7"]
+dev = ["pytest>=7", "scipy>=1.10", "scikit-learn>=1.3"]
+
+[project.scripts]
+gpm-more = "gpm_more.cli:main"
+
+[project.urls]
+Repository = "https://github.com/HayesShi/GPM-More"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"

@@ -1,0 +1,6 @@
+training_intervention,extra_all_lr_factor,best_validation_R2,best_update,final_validation_R2,seed,common_prefix_update,suffix_updates,result_source
+native,1.0,0.48517000675201416,600,0.46412432193756104,0,400,600,route_train/endpoints.csv
+detach_global,1.0,0.4996578097343445,700,0.4956509470939636,0,400,600,route_train/endpoints.csv
+detach_global_stepmatched,1.0,0.49966371059417725,600,0.4955223798751831,0,400,600,route_train/endpoints.csv
+native,0.1,0.5051393508911133,500,0.5050761699676514,0,400,600,route_decay/factorial_endpoints.csv
+detach_global,0.1,0.5065184235572815,1000,0.5065184235572815,0,400,600,route_decay/factorial_endpoints.csv

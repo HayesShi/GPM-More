@@ -1,0 +1,16 @@
+{
+  "steps": 1000,
+  "seed": 0,
+  "lr": 0.0003,
+  "weight_decay": 0.01,
+  "warmup": 100,
+  "batch_size": 128,
+  "micro_batch_size": 32,
+  "train_budgets": [4, 8, 12, 16],
+  "eval_budget": 12,
+  "eval_every": 50,
+  "feedback": {"mode": "full", "stop_after": 400, "alpha": 1.0},
+  "late_lr": {"after": 400, "factor": 0.1},
+  "clip_policy": "common_full",
+  "model": {}
+}

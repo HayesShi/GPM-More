@@ -1,0 +1,90 @@
+{
+  "totals": {
+    "committed_training_updates": 400,
+    "logical_backward_traversals": 800,
+    "micro_loss_backward_calls": 3200,
+    "disposable_actual_AdamW_candidate_steps": 800,
+    "whole_candidate_commits": 400,
+    "algorithm_Q_logical_128_root_forwards": 400,
+    "algorithm_Q_micro_32_root_forwards": 1600,
+    "audit_logical_128_root_forwards": 400,
+    "audit_micro_32_root_forwards": 1600,
+    "additional_preflight_backward_traversals": 0,
+    "preflight_policy": "first actual paired step was checked before hard commit; no separate training trajectory"
+  },
+  "timing_scope": {
+    "runner_wall_seconds": "train() entry through completion, including task/source setup and output I/O; excludes interpreter/import startup and earlier CUDA initialization",
+    "total_seconds": "sum of paired_step timers; includes first-step candidate archive, excludes outer sample/probe-ID selection and validation-boundary I/O",
+    "Q_forward_seconds": "two actual candidate Q128 eval forwards plus MSE arithmetic per conditional step, separately measured",
+    "audit_forward_seconds": "two additional nonselection Qaudit128 eval forwards plus MSE arithmetic per conditional step, separately measured",
+    "fixed_stop_engineering_cost": "fixed stop also constructs both actual AdamW proposals and snapshots; all Q/Qaudit forwards skipped",
+    "interpretation": "actual implementation timings; sequential wall differences are affected by varying runtime conditions and are not an optimized algorithm cost estimate"
+  },
+  "stream_checks": {
+    "conditional_stop_suffix_digests_equal": true,
+    "conditional_stop_final_native_rng_equal": true,
+    "both_equal_historical_lowLR_sampler_and_final_rng": true
+  },
+  "no_additional_GPU_work_after_two_arms": true,
+  "per_arm": {
+    "conditional": {
+      "committed_training_updates": 200,
+      "logical_backward_traversals": 400,
+      "micro_loss_backward_calls": 1600,
+      "disposable_actual_AdamW_candidate_steps": 400,
+      "whole_candidate_commits": 200,
+      "algorithm_Q_logical_128_root_forwards": 400,
+      "algorithm_Q_micro_32_root_forwards": 1600,
+      "audit_logical_128_root_forwards": 400,
+      "audit_micro_32_root_forwards": 1600,
+      "validation_passes_including_baseline_and_diagnostic601": 6,
+      "timings": {
+        "backward_seconds": 60.222967399982736,
+        "endpoint_seconds": 27.931715700018685,
+        "Q_forward_seconds": 22.30781379970722,
+        "audit_forward_seconds": 21.668249700102024,
+        "total_seconds": 142.38955610009725,
+        "other_step_bookkeeping_seconds": 10.258809500286588,
+        "validation_seconds": 11.398077699996065,
+        "runner_wall_seconds": 180.0929094000021,
+        "nonstep_nonvalidation_runner_seconds": 26.305275599908782
+      },
+      "peak_cuda_allocated_bytes": 668687872
+    },
+    "stop": {
+      "committed_training_updates": 200,
+      "logical_backward_traversals": 400,
+      "micro_loss_backward_calls": 1600,
+      "disposable_actual_AdamW_candidate_steps": 400,
+      "whole_candidate_commits": 200,
+      "algorithm_Q_logical_128_root_forwards": 0,
+      "algorithm_Q_micro_32_root_forwards": 0,
+      "audit_logical_128_root_forwards": 0,
+      "audit_micro_32_root_forwards": 0,
+      "validation_passes_including_baseline_and_diagnostic601": 6,
+      "timings": {
+        "backward_seconds": 72.59235300013097,
+        "endpoint_seconds": 36.17179519988713,
+        "Q_forward_seconds": 0.0,
+        "audit_forward_seconds": 0.0,
+        "total_seconds": 121.28325149990269,
+        "other_step_bookkeeping_seconds": 12.519103299884591,
+        "validation_seconds": 13.752227299992228,
+        "runner_wall_seconds": 159.1457345999952,
+        "nonstep_nonvalidation_runner_seconds": 24.110255800100276
+      },
+      "peak_cuda_allocated_bytes": 646348288
+    }
+  },
+  "environment": {
+    "python": "3.10.19 | packaged by conda-forge | (main, Oct 22 2025, 22:23:22) [MSC v.1944 64 bit (AMD64)]",
+    "platform": "Windows-10-10.0.26200-SP0",
+    "torch": "2.5.1+cu121",
+    "torch_compiled_cuda": "12.1",
+    "numpy": "2.2.6",
+    "environment_read_on_CPU": true,
+    "cuda_initialized_before": false,
+    "cuda_initialized_after": false,
+    "runtime_training_precision": "FP32; TF32 off; cuDNN enabled; no autocast"
+  }
+}
