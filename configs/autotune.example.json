@@ -1,0 +1,36 @@
+{
+  "schema": "gpm-more-autotune-v1",
+  "datasets": [
+    {
+      "name": "artnet-views",
+      "data": "../data/artnet-views",
+      "init_weights": {
+        "0": "../weights/artnet-views/seed0/pretrained.pt",
+        "1": "../weights/artnet-views/seed1/pretrained.pt",
+        "2": "../weights/artnet-views/seed2/pretrained.pt"
+      }
+    }
+  ],
+  "base_config": {
+    "steps": 1000,
+    "warmup": 100,
+    "batch_size": 128,
+    "micro_batch_size": 32,
+    "train_budgets": [4, 8, 12, 16],
+    "eval_budget": 12,
+    "eval_every": 50,
+    "weight_decay": 0.01,
+    "grad_clip": 1.0,
+    "clip_policy": "common_full",
+    "label_smoothing": 0.05,
+    "model": {}
+  },
+  "learning_rates": [0.0003, 0.0001, 0.001],
+  "late_lr_factors": [1.0, 0.1],
+  "stop_after": 400,
+  "seeds": [0, 1, 2],
+  "wall_hours": 12,
+  "cpu_threads": 4,
+  "device": "cuda:0",
+  "min_free_gb": 2
+}

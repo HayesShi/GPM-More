@@ -50,7 +50,7 @@ python -m pytest
 
 核心模型只依赖 PyTorch 和 NumPy。`data` 提供采样与分类指标所需依赖，`plots` 用于重画图，`dev` 用于测试。
 
-本地 CPU 的11项测试已通过；同一历史权重在四种 walk 预算下的活动前向与旧实现完全一致。范围与记录见 [VALIDATION.md](docs/VALIDATION.md)。
+本地 CPU 的16项测试已通过；同一历史权重在四种 walk 预算下的活动前向与旧实现完全一致。范围与记录见 [VALIDATION.md](docs/VALIDATION.md)。
 
 ## 直接使用模型
 
@@ -77,6 +77,16 @@ gpm-more train --data data/artnet --config configs/artnet_feedback.json --output
 ```
 
 新采样和从头训练用于建立自己的实验；历史表中的结果依赖原有结构预训练权重、缓存和继承优化器状态。已有权重可用 `--init-weights` 导入，完整续训使用本训练器生成的 `--resume` checkpoint。数据下载、预处理与结果复现范围见 [DATA.md](docs/DATA.md)。
+
+## 按数据集自动调参
+
+自动队列分别为每个数据集选择微调配置。示例采用3个学习率、2个后期学习率倍率，以及完整反馈和后期停止反馈，共12组配置；两类方法各分配6次搜索。先在seed 0上按验证指标选定配置，再固定配置运行seed 1、2，每个数据集最多16次完整微调。
+
+```bash
+python -m gpm_more.cli autotune --plan configs/autotune.example.json --output runs/autotune
+```
+
+先在计划中填写数据和预训练权重的位置。队列保存训练代码快照、配置、日志和实时汇总，支持中断恢复，并限制为单个GPU训练进程。回归任务按R²选配置，二分类按AP，多分类按准确率；测试集不参与选择。完整说明、停止方式与预训练资产要求见 [AUTOTUNE.md](docs/AUTOTUNE.md)。
 
 ## 重画已有结果
 

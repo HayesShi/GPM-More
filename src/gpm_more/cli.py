@@ -23,16 +23,28 @@ def main(argv=None):
     p.add_argument('--device', default='cpu')
     p.add_argument('--resume', help='Complete checkpoint produced by this trainer')
     p.add_argument('--init-weights', help='Optional model weights; historical active weights supported')
+    p.add_argument('--reset-head', action='store_true', help='Reset task head after loading weights')
+    p.add_argument('--max-updates', type=int, help='Absolute resumable update boundary')
+    p.add_argument('--stop-file', help='Stop at the next validation checkpoint if this file exists')
+    p.add_argument('--max-wall-seconds', type=float, help='Stop at a validation checkpoint after this time')
+    p = sub.add_parser('autotune', help='Run a resumable per-dataset validation search')
+    p.add_argument('--plan', required=True, help='Autotune JSON plan; see docs/AUTOTUNE.md')
+    p.add_argument('--output', required=True)
     args = parser.parse_args(argv)
     if args.command == 'prepare':
         from .data import prepare
         result = prepare(args.graph, args.output, task=args.task, name=args.name, seed=args.seed,
                          bank=args.bank, chunk_size=args.chunk_size,
                          standardize_targets=args.standardize_targets)
-    else:
+    elif args.command == 'train':
         from .train import train
         result = train(args.data, args.output, args.config, device=args.device,
-                       resume=args.resume, init_weights=args.init_weights)
+                       resume=args.resume, init_weights=args.init_weights,
+                       reset_head=args.reset_head, max_updates=args.max_updates,
+                       stop_file=args.stop_file, max_wall_seconds=args.max_wall_seconds)
+    else:
+        from .autotune import run_queue
+        result = run_queue(args.plan, args.output)
     print(json.dumps(result, indent=2, allow_nan=False), flush=True)
 
 

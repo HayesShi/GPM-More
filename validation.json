@@ -37,6 +37,14 @@
   "passed": true,
   "historical_training_reproduced": false,
   "CUDA_initialized": false,
+  "autotune_extension_checks": {
+    "date": "2026-10-28",
+    "full_pytest_passed": 16,
+    "queue_selection_resume_and_locking": "passed",
+    "strict_encoder_transfer_and_head_reset": "passed",
+    "pretraining_asset_relocation": "passed",
+    "live_experiment_results": "Stored separately from engineering checks"
+  },
   "standalone_release_checks": {
     "date": "2026-10-28",
     "device": "cpu",

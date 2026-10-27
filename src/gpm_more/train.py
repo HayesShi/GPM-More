@@ -113,7 +113,47 @@ def _save_checkpoint(path, payload):
 
 
 def _save_json(path, value):
-    path.write_text(json.dumps(value, indent=2, ensure_ascii=False, allow_nan=False), encoding="utf8")
+    temporary = path.with_suffix(path.suffix + ".tmp")
+    temporary.write_text(json.dumps(value, indent=2, ensure_ascii=False, allow_nan=False), encoding="utf8")
+    temporary.replace(path)
+
+
+def initialize_weights(model, path, *, reset_head=False, seed=0):
+    """Restore every active tensor, optionally replacing the task head.
+
+    Head initialization uses a separate CPU RNG stream, preserving the training
+    stream and matching the historical seed-zero Linear reset. The default
+    retains the head contained in the supplied weights.
+    """
+    weights = torch.load(path, map_location="cpu", weights_only=True)
+    state = weights.get("state_dict", weights.get("model_state", weights))
+    if reset_head:
+        # Only explicitly reset head tensors may differ in output dimension.
+        # Require their source keys as well; every encoder key remains strict.
+        own = model.state_dict()
+        head_keys = [name for name in own if name.startswith("backbone.head.")]
+        if any(name not in state for name in head_keys):
+            raise ValueError("Source lacks the task-head tensors requested for reset")
+        state = {**state, **{name: own[name] for name in head_keys}}
+    ignored = model.load_historical_state(state)
+    initialization = {"mode": "weights_only", "source": str(Path(path).resolve()),
+                      "ignored_inactive_keys": ignored, "optimizer_history_imported": False,
+                      "task_head_reset": bool(reset_head)}
+    if reset_head:
+        head = model.backbone.head
+        if not isinstance(head, nn.Linear):
+            raise ValueError("Task-head reset requires the existing Linear task head")
+        head_seed = 70000000 + seed
+        with torch.random.fork_rng(devices=[]):
+            torch.random.default_generator.manual_seed(head_seed)
+            reference = nn.Linear(head.in_features, head.out_features, bias=head.bias is not None)
+        head.load_state_dict(reference.state_dict(), strict=True)
+        initialization["task_head_seed"] = head_seed
+    if isinstance(weights, dict):
+        initialization["source_metadata"] = {key: weights[key] for key in
+            ("schema", "dataset", "family", "seed", "phase", "step", "test_labels_read")
+            if key in weights}
+    return initialization
 
 
 def _sync(device):
@@ -223,7 +263,8 @@ def _write_curves(path, history):
 
 
 def train(data_dir, output_dir, config_path, device="cpu", resume=None,
-          init_weights=None, *, max_updates=None):
+          init_weights=None, *, max_updates=None, reset_head=False,
+          stop_file=None, max_wall_seconds=None):
     """Train or resume one explicit recipe without reading test labels.
 
     ``max_updates`` is an optional absolute update boundary for interruption
@@ -231,9 +272,14 @@ def train(data_dir, output_dir, config_path, device="cpu", resume=None,
     an additional validation/model-selection point. Resume uses the same
     resolved configuration, architecture, metadata and train/validation IDs.
     """
+    call_start = time.perf_counter()
     config = resolved_config(config_path)
     if resume is not None and init_weights is not None:
         raise ValueError("Choose resume or weight initialization, not both")
+    if reset_head and (init_weights is None or resume is not None):
+        raise ValueError("Head reset requires weight initialization of a new run")
+    if max_wall_seconds is not None and max_wall_seconds <= 0:
+        raise ValueError("max_wall_seconds must be positive")
     device = torch.device(device)
     if device.type == "cuda" and not torch.cuda.is_available():
         raise RuntimeError("Requested CUDA device is unavailable")
@@ -300,11 +346,8 @@ def train(data_dir, output_dir, config_path, device="cpu", resume=None,
         _rng_restore(saved["rng"], rng, device)
     else:
         if init_weights is not None:
-            weights = torch.load(init_weights, map_location="cpu", weights_only=True)
-            state = weights.get("state_dict", weights.get("model_state", weights))
-            ignored = model.load_historical_state(state)
-            initialization = {"mode": "weights_only", "source": str(Path(init_weights).resolve()),
-                              "ignored_inactive_keys": ignored, "optimizer_history_imported": False}
+            initialization = initialize_weights(model, init_weights,
+                                                reset_head=reset_head, seed=config["seed"])
         started = time.perf_counter()
         previous_rng = _rng_capture(rng, device)
         metrics, prediction = evaluate(model, data, x, config)
@@ -320,6 +363,7 @@ def train(data_dir, output_dir, config_path, device="cpu", resume=None,
     if end < update:
         raise ValueError("Requested stopping boundary precedes the resumed update")
     wall_start = time.perf_counter()
+    stop_reason = None
 
     def payload():
         return {"format": "gpm-more-checkpoint-v1", "update": update, "config": config,
@@ -331,6 +375,8 @@ def train(data_dir, output_dir, config_path, device="cpu", resume=None,
                 "train_seconds": train_seconds, "validation_seconds": validation_seconds,
                 "initialization": initialization}
 
+    if saved is None:
+        _save_checkpoint(output / "latest.pt", payload())
     for update in range(update + 1, end + 1):
         started = time.perf_counter()
         nodes = rng.choice(data.train_ids, config["batch_size"],
@@ -387,8 +433,21 @@ def train(data_dir, output_dir, config_path, device="cpu", resume=None,
                                 prediction=prediction, target=data.targets(data.val_ids))
             _save_checkpoint(output / "latest.pt", payload())
             _write_curves(output / "curves.csv", history)
+            _save_json(output / "progress.json", {"update": update, "validation": metrics,
+                "best_update": best_update, "best_validation": best_metrics,
+                "train_seconds": train_seconds, "validation_seconds": validation_seconds,
+                "peak_gpu_allocated_mb": torch.cuda.max_memory_allocated(device) / 2**20
+                if device.type == "cuda" else 0.})
             print(json.dumps({"update": update, "validation": metrics,
                               "best_update": best_update}, allow_nan=False), flush=True)
+            if update < config["steps"]:
+                if stop_file is not None and Path(stop_file).exists():
+                    stop_reason = "stop_file"
+                elif (max_wall_seconds is not None
+                      and time.perf_counter() - call_start >= max_wall_seconds):
+                    stop_reason = "wall_budget"
+                if stop_reason is not None:
+                    break
     # An intentional intermediate interruption saves complete state but does
     # not create an extra validation point or change best-checkpoint selection.
     _save_checkpoint(output / "latest.pt", payload())
@@ -406,5 +465,6 @@ def train(data_dir, output_dir, config_path, device="cpu", resume=None,
               "this_call_wall_seconds": time.perf_counter() - wall_start,
               "logical_backward_passes_total": sum(row["logical_backward_passes"] for row in local_steps),
               "test_labels_read": False, "initialization": initialization}
+    result["stop_reason"] = stop_reason
     _save_json(output / "metrics.json", result)
     return result

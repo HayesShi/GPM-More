@@ -4,7 +4,33 @@ import numpy as np
 import pytest
 import torch
 
-from gpm_more.train import task_metrics, train
+from gpm_more.train import initialize_weights, task_metrics, train
+from gpm_more.model import ModelConfig, RelationalPatternModel
+
+
+def test_explicit_head_reset_restores_encoder_and_preserves_training_rng(tmp_path):
+    source = RelationalPatternModel(ModelConfig(input_dim=5, num_outputs=3, hidden_dim=16))
+    path = tmp_path / 'pretrained.pt'
+    torch.save({'state_dict': source.state_dict(), 'phase': 'pretrain', 'seed': 0}, path)
+    target = RelationalPatternModel(ModelConfig(input_dim=5, num_outputs=1, hidden_dim=16))
+    before = torch.get_rng_state().clone()
+    initialization = initialize_weights(target, path, reset_head=True, seed=2)
+    assert torch.equal(before, torch.get_rng_state())
+    assert initialization['task_head_seed'] == 70000002
+    assert initialization['optimizer_history_imported'] is False
+    for name, value in source.state_dict().items():
+        if not name.startswith('backbone.head.'):
+            assert torch.equal(value, target.state_dict()[name])
+    with torch.random.fork_rng(devices=[]):
+        torch.random.default_generator.manual_seed(70000002)
+        reference = torch.nn.Linear(16, 1)
+    assert torch.equal(reference.weight, target.backbone.head.weight)
+    assert torch.equal(reference.bias, target.backbone.head.bias)
+    broken = source.state_dict()
+    broken.pop('backbone.pattern_encoder.pre_projection.weight')
+    torch.save({'state_dict': broken}, path)
+    with pytest.raises(ValueError, match='lacks active weights'):
+        initialize_weights(target, path, reset_head=True)
 
 
 def test_regression_mse_name_does_not_assume_standardized_targets():
