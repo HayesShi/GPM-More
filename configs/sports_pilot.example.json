@@ -1,0 +1,42 @@
+{
+  "purpose": "Single-seed development experiment, not a replacement for the publication main table",
+  "dataset": "MM-GRAPH Amazon-Sports",
+  "seed": 0,
+  "gpu_budget_seconds": 5400,
+  "order": ["mlp", "sage", "pair_independent", "pair_joint"],
+  "data_protocol": "Released train/valid partition and all 150 official negatives. Official train bidirection retained. Reverse-exposed validation positives are separately reported; no test performance accessed.",
+  "selection": "best full validation MRR; also final and clean diagnostic slice reported",
+  "baselines": {
+    "seed": 0,
+    "max_steps": 1000,
+    "max_train_positives": 512000,
+    "eval_every_steps": 250,
+    "batch_size": 512,
+    "hidden_dim": 256,
+    "num_layers": 3,
+    "lr": 0.0005,
+    "num_of_neighbors": 15,
+    "lr_scheduler_step_size": 5,
+    "lr_scheduler_gamma": 0.1,
+    "inference_batch_size": 1000,
+    "eval_batch_size": 64,
+    "device": "cuda",
+    "num_threads": 2
+  },
+  "pair": {
+    "seed": 0,
+    "max_steps": 4000,
+    "eval_every_steps": 1000,
+    "batch_size": 128,
+    "walks": 16,
+    "hidden_dim": 256,
+    "rank": 16,
+    "lr": 0.0003,
+    "weight_decay": 0.0001,
+    "warmup_steps": 100,
+    "grad_clip": 5.0
+  },
+  "fixed_comparison": "The pair arms share initialization, sampled positives, negatives, walk seeds, budget and backbone; only the cross-endpoint witness score is enabled in pair_joint.",
+  "not_yet_run": ["exchange-pair loss", "content-conditioned gradient rule", "extra seeds", "Cloth", "test evaluation"],
+  "stop_policy": "Respect STOP_REQUESTED and absolute budget.json deadline. Skip completed trials; never reset the budget or silently restart a partly completed baseline."
+}

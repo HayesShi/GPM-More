@@ -1,0 +1,81 @@
+{
+  "complete": true,
+  "validation_only": true,
+  "test_files_read": false,
+  "new_training_or_inference": false,
+  "train_nodes": 8251,
+  "validation_nodes": 2750,
+  "checks": {
+    "GPM": {
+      "saved_validation_accuracy_recomputed": 0.9014545454545455,
+      "same_validation_ids": true,
+      "first_best_history_matches": true,
+      "backend": {
+        "deterministic_algorithms": false,
+        "cudnn_deterministic": true,
+        "cudnn_benchmark": false,
+        "cuda_matmul_tf32": false,
+        "cudnn_tf32": true
+      }
+    },
+    "source_low": {
+      "saved_validation_accuracy_recomputed": 0.8938181818181818,
+      "same_validation_ids": true,
+      "first_best_history_matches": true,
+      "backend": {
+        "deterministic_algorithms": false,
+        "cudnn_deterministic": true,
+        "cudnn_benchmark": false,
+        "cuda_matmul_tf32": false,
+        "cudnn_tf32": true
+      }
+    },
+    "source_highlr": {
+      "saved_validation_accuracy_recomputed": 0.9050909090909091,
+      "same_validation_ids": true,
+      "first_best_history_matches": true,
+      "backend": {
+        "deterministic_algorithms": false,
+        "cudnn_deterministic": true,
+        "cudnn_benchmark": false,
+        "cuda_matmul_tf32": false,
+        "cudnn_tf32": true
+      }
+    },
+    "fresh_low": {
+      "saved_validation_accuracy_recomputed": 0.9003636363636364,
+      "same_validation_ids": true,
+      "first_best_history_matches": true,
+      "backend": {
+        "deterministic_algorithms": false,
+        "cudnn_deterministic": true,
+        "cudnn_benchmark": false,
+        "cuda_matmul_tf32": false,
+        "cudnn_tf32": true
+      }
+    },
+    "fresh_high": {
+      "saved_validation_accuracy_recomputed": 0.9061818181818182,
+      "same_validation_ids": true,
+      "first_best_history_matches": true,
+      "backend": {
+        "deterministic_algorithms": false,
+        "cudnn_deterministic": true,
+        "cudnn_benchmark": false,
+        "cuda_matmul_tf32": false,
+        "cudnn_tf32": true
+      }
+    }
+  },
+  "contrasts": {
+    "source_high_minus_source_low_pp": 1.1272727272727212,
+    "fresh_high_minus_fresh_low_pp": 0.5818181818181833,
+    "fresh_low_minus_source_low_pp": 0.6545454545454521,
+    "fresh_high_minus_source_high_pp": 0.10909090909091423,
+    "winner_minus_original_pp": 1.2363636363636354,
+    "winner_minus_GPM_pp": 0.4727272727272691
+  },
+  "failures": [],
+  "campaign_elapsed_wall_seconds": 6102.628580093384,
+  "within_original_3_hour_budget": true
+}

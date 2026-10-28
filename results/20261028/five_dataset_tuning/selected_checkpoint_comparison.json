@@ -1,0 +1,137 @@
+[
+  {
+    "dataset": "artnet-views",
+    "seed": 0,
+    "best_updates": {
+      "full": 600,
+      "late_stop": 950
+    },
+    "selected_model_tensors_identical": false
+  },
+  {
+    "dataset": "artnet-views",
+    "seed": 1,
+    "best_updates": {
+      "full": 550,
+      "late_stop": 550
+    },
+    "selected_model_tensors_identical": false
+  },
+  {
+    "dataset": "artnet-views",
+    "seed": 2,
+    "best_updates": {
+      "full": 500,
+      "late_stop": 700
+    },
+    "selected_model_tensors_identical": false
+  },
+  {
+    "dataset": "tolokers-2",
+    "seed": 0,
+    "best_updates": {
+      "full": 150,
+      "late_stop": 150
+    },
+    "selected_model_tensors_identical": true
+  },
+  {
+    "dataset": "tolokers-2",
+    "seed": 1,
+    "best_updates": {
+      "full": 100,
+      "late_stop": 100
+    },
+    "selected_model_tensors_identical": true
+  },
+  {
+    "dataset": "tolokers-2",
+    "seed": 2,
+    "best_updates": {
+      "full": 150,
+      "late_stop": 150
+    },
+    "selected_model_tensors_identical": true
+  },
+  {
+    "dataset": "photo",
+    "seed": 0,
+    "best_updates": {
+      "full": 350,
+      "late_stop": 350
+    },
+    "selected_model_tensors_identical": true
+  },
+  {
+    "dataset": "photo",
+    "seed": 1,
+    "best_updates": {
+      "full": 150,
+      "late_stop": 150
+    },
+    "selected_model_tensors_identical": true
+  },
+  {
+    "dataset": "photo",
+    "seed": 2,
+    "best_updates": {
+      "full": 200,
+      "late_stop": 200
+    },
+    "selected_model_tensors_identical": true
+  },
+  {
+    "dataset": "pubmed",
+    "seed": 0,
+    "best_updates": {
+      "full": 150,
+      "late_stop": 150
+    },
+    "selected_model_tensors_identical": true
+  },
+  {
+    "dataset": "pubmed",
+    "seed": 1,
+    "best_updates": {
+      "full": 150,
+      "late_stop": 150
+    },
+    "selected_model_tensors_identical": true
+  },
+  {
+    "dataset": "pubmed",
+    "seed": 2,
+    "best_updates": {
+      "full": 200,
+      "late_stop": 200
+    },
+    "selected_model_tensors_identical": true
+  },
+  {
+    "dataset": "computers",
+    "seed": 0,
+    "best_updates": {
+      "full": 400,
+      "late_stop": 400
+    },
+    "selected_model_tensors_identical": true
+  },
+  {
+    "dataset": "computers",
+    "seed": 1,
+    "best_updates": {
+      "full": 100,
+      "late_stop": 100
+    },
+    "selected_model_tensors_identical": true
+  },
+  {
+    "dataset": "computers",
+    "seed": 2,
+    "best_updates": {
+      "full": 850,
+      "late_stop": 300
+    },
+    "selected_model_tensors_identical": false
+  }
+]

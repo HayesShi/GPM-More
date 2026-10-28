@@ -1,0 +1,76 @@
+{
+  "date": "2026-10-28",
+  "formal_training_rerun": false,
+  "syntax_compile": "passed",
+  "computers_cli_help": "passed",
+  "status_read_only": "passed",
+  "recorded_best_matches_csv": true,
+  "computers_training_math_source_check": {
+    "runner.py": {
+      "historical_functions_unchanged": 20,
+      "new_functions": []
+    },
+    "rawsum_model.py": {
+      "historical_functions_unchanged": 2,
+      "new_functions": [
+        "prepare_relations"
+      ]
+    }
+  },
+  "sports_cpu_model_check": {
+    "status": "passed",
+    "check": "small_real_cpu_critical_path_no_training",
+    "torch_version": "2.5.1+cu121",
+    "seconds": 1.7849100999883376,
+    "graph_nodes": 8,
+    "undirected_edges": 9,
+    "excluded_undirected_edges": 2,
+    "num_walks": 16,
+    "walk_steps": 8,
+    "relation_dim": 93,
+    "physical_edge_deletion_paths_equal": true,
+    "physical_edge_deletion_relations_equal": true,
+    "no_excluded_edge_in_transitions_or_descriptors": true,
+    "isolated_root_no_valid_witness": true,
+    "isolated_joint_score": 0.0,
+    "ordinary_joint_initial_parameter_equality": true,
+    "joint_additive_score_equation": true,
+    "joint_symmetry_max_error": 0.0,
+    "global_id_renaming_score_max_error": 1.7881393432617188e-07,
+    "global_id_renaming_base_max_error": 1.7881393432617188e-07,
+    "cached_root_scatter_z_max_error": 0.0,
+    "known_same_witness_contraction": 1.0,
+    "independent_id_relabel_contraction": 0.0,
+    "backward_finite": true,
+    "backward_gradient_norms": {
+      "U": 0.008662053383886814,
+      "V": 0.009952913038432598,
+      "joint_scale": 0.009185466915369034,
+      "pre_projection": 2.3647985458374023,
+      "anonymous_gru": 0.04102471098303795,
+      "relation_adapter": 0.1353343427181244,
+      "action_embedding": 0.08506474643945694,
+      "outer_transformer": 0.2650180757045746,
+      "pair_head": 1.1684671640396118
+    },
+    "loss": 0.754334568977356,
+    "witness_table_shape": [
+      8,
+      128,
+      16
+    ],
+    "joint_scale_initial": 0.10000000149011612,
+    "witness_projection_scale": 0.08838834764831843,
+    "all_parameters_unchanged_after_backward": true,
+    "full_gpu_check": "delegated_to_parent_runner_not_performed_here"
+  },
+  "original_experiment_artifacts_unchanged": true,
+  "pytest": {
+    "passed": 24,
+    "warnings": 7
+  },
+  "cpu_official_configuration_import": "passed",
+  "fresh_model_construction": "passed",
+  "effective_peak_lr": 0.0003,
+  "GPU_training_launched": false
+}

@@ -1,0 +1,117 @@
+{
+  "rows": [
+    {
+      "method": "MLP / official architecture",
+      "kind": "trained_seed0",
+      "full_val_mrr_percent": 23.37947654724121,
+      "clean_val_mrr_percent": 22.98322868347168,
+      "reverse_exposed_mrr_percent": 25.13966941833496,
+      "final_full_val_mrr_percent": 23.37947654724121,
+      "final_clean_val_mrr_percent": 22.98322868347168,
+      "best_step": 1000,
+      "trained_positive_examples": 512000
+    },
+    {
+      "method": "SAGE / official architecture",
+      "kind": "trained_seed0",
+      "full_val_mrr_percent": 29.780515670776367,
+      "clean_val_mrr_percent": 28.413742065429688,
+      "reverse_exposed_mrr_percent": 35.922386169433594,
+      "final_full_val_mrr_percent": 29.780515670776367,
+      "final_clean_val_mrr_percent": 28.413742065429688,
+      "best_step": 1000,
+      "trained_positive_examples": 512000
+    },
+    {
+      "method": "raw_sum256-LP / independent endpoints",
+      "kind": "trained_seed0",
+      "full_val_mrr_percent": 36.16046903636305,
+      "clean_val_mrr_percent": 36.12845185008553,
+      "reverse_exposed_mrr_percent": 36.29213851471641,
+      "final_full_val_mrr_percent": 36.16046903636305,
+      "final_clean_val_mrr_percent": 36.12845185008553,
+      "best_step": 4000,
+      "trained_positive_examples": 512000
+    },
+    {
+      "method": "raw_sum256-LP / joint path witnesses",
+      "kind": "trained_seed0",
+      "full_val_mrr_percent": 30.46069701815133,
+      "clean_val_mrr_percent": 29.231060278044318,
+      "reverse_exposed_mrr_percent": 35.98399519453627,
+      "final_full_val_mrr_percent": 30.46069701815133,
+      "final_clean_val_mrr_percent": 29.231060278044318,
+      "best_step": 4000,
+      "trained_positive_examples": 512000
+    },
+    {
+      "method": "Observed edge indicator",
+      "kind": "no_training",
+      "full_val_mrr_percent": 6.325999115553589,
+      "clean_val_mrr_percent": 1.2803142644245178,
+      "reverse_exposed_mrr_percent": 29.095678124200713,
+      "final_full_val_mrr_percent": 6.325999115553589,
+      "final_clean_val_mrr_percent": 1.2803142644245178,
+      "best_step": null,
+      "trained_positive_examples": 0
+    },
+    {
+      "method": "Common neighbors (CN)",
+      "kind": "no_training",
+      "full_val_mrr_percent": 41.41839918318624,
+      "clean_val_mrr_percent": 41.567714175865795,
+      "reverse_exposed_mrr_percent": 40.72337245527346,
+      "final_full_val_mrr_percent": 41.41839918318624,
+      "final_clean_val_mrr_percent": 41.567714175865795,
+      "best_step": null,
+      "trained_positive_examples": 0
+    },
+    {
+      "method": "Resource Allocation (RA)",
+      "kind": "no_training",
+      "full_val_mrr_percent": 42.31368648416342,
+      "clean_val_mrr_percent": 42.33914511397741,
+      "reverse_exposed_mrr_percent": 42.177867117475266,
+      "final_full_val_mrr_percent": 42.31368648416342,
+      "final_clean_val_mrr_percent": 42.33914511397741,
+      "best_step": null,
+      "trained_positive_examples": 0
+    }
+  ],
+  "verification_errors": [],
+  "test_evaluated": false,
+  "resources": [
+    {
+      "method": "mlp",
+      "seconds": 68.14630818367004,
+      "train_seconds": null,
+      "peak_allocated_GiB": null
+    },
+    {
+      "method": "sage",
+      "seconds": 188.32924818992615,
+      "train_seconds": null,
+      "peak_allocated_GiB": null
+    },
+    {
+      "method": "pair_independent",
+      "seconds": 861.1303548812866,
+      "train_seconds": 819.2074563503265,
+      "peak_allocated_GiB": 2.504721164703369
+    },
+    {
+      "method": "pair_joint",
+      "seconds": 918.1334104537964,
+      "train_seconds": 857.3310148715973,
+      "peak_allocated_GiB": 2.5067977905273438
+    }
+  ],
+  "fixed_weight_intervention": {
+    "kind": "same final joint-trained checkpoint, disable only added endpoint score",
+    "on_full_mrr_percent": 30.46069701815133,
+    "off_full_mrr_percent": 30.226684969112718,
+    "on_clean_mrr_percent": 29.231060278044318,
+    "off_clean_mrr_percent": 31.114256563489295
+  },
+  "completed_trained_models": 4
+}

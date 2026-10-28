@@ -1,0 +1,12 @@
+{
+  "dataset": "computers",
+  "split": "official high column0",
+  "seed": 0,
+  "initialization": "fresh",
+  "feedback": "full",
+  "base_lr": 0.048,
+  "effective_peak_lr": 0.0003,
+  "wall_hours": 3,
+  "recorded_validation_accuracy": 0.9061818181818182,
+  "selection": "seed0 validation only; no tuned test result"
+}

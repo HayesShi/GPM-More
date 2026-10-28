@@ -1,0 +1,15 @@
+{
+  "method": "raw_sum",
+  "configuration": "fresh_high",
+  "initialization": "fresh",
+  "base_lr": 0.048,
+  "effective_peak_lr": 0.00030000000000000003,
+  "seed": 0,
+  "split_column": 0,
+  "checkpoint": "runs/fresh_high/best.pt",
+  "best_epoch": 90,
+  "validation_accuracy": 0.9061818181818182,
+  "selection_rule": "First strict maximum over original source_low then three frozen candidates",
+  "new_feedback_algorithm": false,
+  "test_evaluated": false
+}

@@ -15,6 +15,7 @@ dependencies = ["numpy>=1.24", "torch>=2.4"]
 data = ["scipy>=1.10", "numba>=0.59", "scikit-learn>=1.3"]
 graphland = ["pandas>=2", "PyYAML>=6", "scikit-learn>=1.5", "torch-geometric>=2.6"]
 plots = ["matplotlib>=3.7"]
+experiments = ["scipy>=1.10", "numba>=0.59", "scikit-learn>=1.3", "PyYAML>=6", "torch-geometric>=2.6", "requests>=2.31"]
 dev = ["pytest>=7", "scipy>=1.10", "scikit-learn>=1.3"]
 
 [project.scripts]

@@ -1,0 +1,178 @@
+{
+  "created_utc": "2026-10-28T13:17:26.976151+00:00",
+  "declaration_utc": "2026-10-28T13:15:34.151022+00:00",
+  "comparison": "Within the same official valid query: positive exact RA>0 and negative exact RA == positive exact RA",
+  "exact_ra_cache": "computed exact full-candidate RA once; cached positive scores and packed eligible mask",
+  "query_rows_with_positive_ra_nonzero": {
+    "full_valid": 41816,
+    "clean_valid": 33946
+  },
+  "results": {
+    "full_valid": {
+      "source_query_rows": 45557,
+      "eligible_queries": 7564,
+      "eligible_candidate_position_pairs": 27286,
+      "independent": {
+        "strict_positive_wins": 19133,
+        "learned_score_ties": 0,
+        "strict_positive_losses": 8153,
+        "pair_weighted_correctness": 0.7012020816535952,
+        "query_averaged_correctness": 0.6567119268431499
+      },
+      "joint": {
+        "strict_positive_wins": 16428,
+        "learned_score_ties": 0,
+        "strict_positive_losses": 10858,
+        "pair_weighted_correctness": 0.6020669940628894,
+        "query_averaged_correctness": 0.5590251967029871
+      },
+      "joint_minus_independent": {
+        "pair_weighted_correctness": -0.09913508759070577,
+        "query_averaged_correctness": -0.09768673014016283
+      }
+    },
+    "clean_valid": {
+      "source_query_rows": 37290,
+      "eligible_queries": 7029,
+      "eligible_candidate_position_pairs": 25949,
+      "independent": {
+        "strict_positive_wins": 18173,
+        "learned_score_ties": 0,
+        "strict_positive_losses": 7776,
+        "pair_weighted_correctness": 0.7003352730355697,
+        "query_averaged_correctness": 0.6551122138702268
+      },
+      "joint": {
+        "strict_positive_wins": 15317,
+        "learned_score_ties": 0,
+        "strict_positive_losses": 10632,
+        "pair_weighted_correctness": 0.590273228255424,
+        "query_averaged_correctness": 0.5448776397492157
+      },
+      "joint_minus_independent": {
+        "pair_weighted_correctness": -0.1100620447801457,
+        "query_averaged_correctness": -0.11023457412101112
+      }
+    }
+  },
+  "source_scores": {
+    "independent": {
+      "path": "outputs\\mm_pair_sports_20261028\\runs\\pair_independent\\valid_scores_final.npy",
+      "shape": [
+        45557,
+        151
+      ],
+      "dtype": "float32",
+      "bytes": 27516556,
+      "mtime_ns": 1793192507521879900
+    },
+    "joint": {
+      "path": "outputs\\mm_pair_sports_20261028\\runs\\pair_joint\\valid_scores_final.npy",
+      "shape": [
+        45557,
+        151
+      ],
+      "dtype": "float32",
+      "bytes": 27516556,
+      "mtime_ns": 1793193425929729600
+    }
+  },
+  "verification_examples": [
+    {
+      "query_row": 7,
+      "negative_column": 0,
+      "source_node": 47,
+      "positive_target": 27,
+      "negative_target": 22887,
+      "exact_positive_and_negative_ra": 0.058823529411764705,
+      "python_set_sum_verified": true
+    },
+    {
+      "query_row": 42,
+      "negative_column": 5,
+      "source_node": 232,
+      "positive_target": 930,
+      "negative_target": 909,
+      "exact_positive_and_negative_ra": 0.1598215511120614,
+      "python_set_sum_verified": true
+    },
+    {
+      "query_row": 48,
+      "negative_column": 0,
+      "source_node": 270,
+      "positive_target": 1167,
+      "negative_target": 3561,
+      "exact_positive_and_negative_ra": 0.42619745845552304,
+      "python_set_sum_verified": true
+    },
+    {
+      "query_row": 51,
+      "negative_column": 0,
+      "source_node": 301,
+      "positive_target": 296,
+      "negative_target": 302,
+      "exact_positive_and_negative_ra": 0.07692307692307693,
+      "python_set_sum_verified": true
+    },
+    {
+      "query_row": 82,
+      "negative_column": 3,
+      "source_node": 447,
+      "positive_target": 8758,
+      "negative_target": 208,
+      "exact_positive_and_negative_ra": 0.023255813953488372,
+      "python_set_sum_verified": true
+    },
+    {
+      "query_row": 84,
+      "negative_column": 1,
+      "source_node": 319,
+      "positive_target": 4955,
+      "negative_target": 9766,
+      "exact_positive_and_negative_ra": 0.09819976771196284,
+      "python_set_sum_verified": true
+    },
+    {
+      "query_row": 95,
+      "negative_column": 0,
+      "source_node": 563,
+      "positive_target": 6727,
+      "negative_target": 23352,
+      "exact_positive_and_negative_ra": 0.03571428571428571,
+      "python_set_sum_verified": true
+    },
+    {
+      "query_row": 96,
+      "negative_column": 6,
+      "source_node": 565,
+      "positive_target": 13881,
+      "negative_target": 22200,
+      "exact_positive_and_negative_ra": 0.13489240228370664,
+      "python_set_sum_verified": true
+    },
+    {
+      "query_row": 101,
+      "negative_column": 1,
+      "source_node": 616,
+      "positive_target": 20572,
+      "negative_target": 327,
+      "exact_positive_and_negative_ra": 0.0136986301369863,
+      "python_set_sum_verified": true
+    },
+    {
+      "query_row": 139,
+      "negative_column": 3,
+      "source_node": 851,
+      "positive_target": 251,
+      "negative_target": 250,
+      "exact_positive_and_negative_ra": 0.12139614771193719,
+      "python_set_sum_verified": true
+    }
+  ],
+  "runtime_seconds": 1.3853072000201792,
+  "cpu_threads": 2,
+  "gpu_used": false,
+  "test_read_or_scored": false,
+  "interpretation": "Exploratory validation diagnostic, not causal or test evidence. Exact float equality can miss mathematically equal RA sums with different floating-point accumulation histories; near-equal RA scores are intentionally excluded. Comparisons are within the same query and use FINAL checkpoint outputs only.",
+  "reproduce_command": "python research_extensions/mm_pair_sports_20261028/structural_tie_probe.py"
+}

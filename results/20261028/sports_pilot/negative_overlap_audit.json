@@ -1,0 +1,193 @@
+{
+  "created_utc": "2026-10-28T13:05:42.044903+00:00",
+  "scope": "Original directed official train rows versus official valid target-negative candidate positions only; no test data opened",
+  "train_directed_rows": 356202,
+  "train_unique_directed_keys": 356202,
+  "validation_query_rows": 45557,
+  "negative_candidates_per_query": 150,
+  "negative_candidate_positions": 6833550,
+  "counting": "All original matrix positions are counted, including repeated negative candidates; unique directed-pair counts are also supplied",
+  "definitions": {
+    "forward_only": "(u,v) in original train and (v,u) absent",
+    "reverse_only": "(u,v) absent from original train and (v,u) present",
+    "both_directions": "both (u,v) and (v,u) present in original train",
+    "neither_direction": "neither direction present in original train",
+    "forward_inclusive": "all original-direction (u,v) matches, including both_directions",
+    "reverse_inclusive": "all reverse-direction (v,u) matches, including both_directions",
+    "self_negative": "u equals negative target v; separate flag that may overlap direction categories",
+    "bidirected_loop_free_train_adjacency": "either direction in original train, excluding u=v, matching prepared CSR membership",
+    "query_rows": "number of valid query rows containing at least one candidate position in the category; row counts across categories may overlap"
+  },
+  "counts": {
+    "forward_only": {
+      "candidate_positions": 129178,
+      "candidate_position_rate": 0.01890349818176497,
+      "query_rows": 34839,
+      "query_row_rate": 0.7647342889127906,
+      "unique_directed_pairs": 94625
+    },
+    "reverse_only": {
+      "candidate_positions": 51094,
+      "candidate_position_rate": 0.007476933658201081,
+      "query_rows": 12662,
+      "query_row_rate": 0.2779375288100621,
+      "unique_directed_pairs": 36538
+    },
+    "both_directions": {
+      "candidate_positions": 56536,
+      "candidate_position_rate": 0.008273298651506172,
+      "query_rows": 17548,
+      "query_row_rate": 0.38518778672871345,
+      "unique_directed_pairs": 41662
+    },
+    "neither_direction": {
+      "candidate_positions": 6596742,
+      "candidate_position_rate": 0.9653462695085278,
+      "query_rows": 45557,
+      "query_row_rate": 1.0,
+      "unique_directed_pairs": 5098738
+    },
+    "forward_inclusive": {
+      "candidate_positions": 185714,
+      "candidate_position_rate": 0.02717679683327114,
+      "query_rows": 37244,
+      "query_row_rate": 0.8175252979783568,
+      "unique_directed_pairs": 136287
+    },
+    "reverse_inclusive": {
+      "candidate_positions": 107630,
+      "candidate_position_rate": 0.015750232309707252,
+      "query_rows": 19143,
+      "query_row_rate": 0.42019887174309106,
+      "unique_directed_pairs": 78200
+    },
+    "either_direction": {
+      "candidate_positions": 236808,
+      "candidate_position_rate": 0.034653730491472225,
+      "query_rows": 37562,
+      "query_row_rate": 0.8245055644577123,
+      "unique_directed_pairs": 172825
+    },
+    "self_negative": {
+      "candidate_positions": 0,
+      "candidate_position_rate": 0.0,
+      "query_rows": 0,
+      "query_row_rate": 0.0,
+      "unique_directed_pairs": 0
+    },
+    "bidirected_loop_free_train_adjacency": {
+      "candidate_positions": 236808,
+      "candidate_position_rate": 0.034653730491472225,
+      "query_rows": 37562,
+      "query_row_rate": 0.8245055644577123,
+      "unique_directed_pairs": 172825
+    }
+  },
+  "independent_set_check_examples": [
+    {
+      "valid_query_row": 0,
+      "negative_column": 76,
+      "source_node": 16,
+      "negative_target_node": 19,
+      "category": "forward_only",
+      "u_to_v_in_original_train": true,
+      "v_to_u_in_original_train": false,
+      "independent_python_tuple_set_verified": true
+    },
+    {
+      "valid_query_row": 0,
+      "negative_column": 143,
+      "source_node": 16,
+      "negative_target_node": 17,
+      "category": "forward_only",
+      "u_to_v_in_original_train": true,
+      "v_to_u_in_original_train": false,
+      "independent_python_tuple_set_verified": true
+    },
+    {
+      "valid_query_row": 3,
+      "negative_column": 4,
+      "source_node": 27,
+      "negative_target_node": 28,
+      "category": "forward_only",
+      "u_to_v_in_original_train": true,
+      "v_to_u_in_original_train": false,
+      "independent_python_tuple_set_verified": true
+    },
+    {
+      "valid_query_row": 0,
+      "negative_column": 11,
+      "source_node": 16,
+      "negative_target_node": 5032,
+      "category": "reverse_only",
+      "u_to_v_in_original_train": false,
+      "v_to_u_in_original_train": true,
+      "independent_python_tuple_set_verified": true
+    },
+    {
+      "valid_query_row": 3,
+      "negative_column": 0,
+      "source_node": 27,
+      "negative_target_node": 22886,
+      "category": "reverse_only",
+      "u_to_v_in_original_train": false,
+      "v_to_u_in_original_train": true,
+      "independent_python_tuple_set_verified": true
+    },
+    {
+      "valid_query_row": 3,
+      "negative_column": 10,
+      "source_node": 27,
+      "negative_target_node": 23969,
+      "category": "reverse_only",
+      "u_to_v_in_original_train": false,
+      "v_to_u_in_original_train": true,
+      "independent_python_tuple_set_verified": true
+    },
+    {
+      "valid_query_row": 0,
+      "negative_column": 8,
+      "source_node": 16,
+      "negative_target_node": 22,
+      "category": "both_directions",
+      "u_to_v_in_original_train": true,
+      "v_to_u_in_original_train": true,
+      "independent_python_tuple_set_verified": true
+    },
+    {
+      "valid_query_row": 0,
+      "negative_column": 13,
+      "source_node": 16,
+      "negative_target_node": 20,
+      "category": "both_directions",
+      "u_to_v_in_original_train": true,
+      "v_to_u_in_original_train": true,
+      "independent_python_tuple_set_verified": true
+    },
+    {
+      "valid_query_row": 1,
+      "negative_column": 1,
+      "source_node": 23,
+      "negative_target_node": 27,
+      "category": "both_directions",
+      "u_to_v_in_original_train": true,
+      "v_to_u_in_original_train": true,
+      "independent_python_tuple_set_verified": true
+    },
+    {
+      "valid_query_row": 4,
+      "negative_column": 2,
+      "source_node": 35,
+      "negative_target_node": 39,
+      "category": "forward_only",
+      "u_to_v_in_original_train": true,
+      "v_to_u_in_original_train": false,
+      "independent_python_tuple_set_verified": true
+    }
+  ],
+  "test_read_or_scored": false,
+  "split_or_training_files_modified": false,
+  "runtime_seconds": 1.7459880000096746,
+  "implementation": "NumPy sorted-key searchsorted, single-thread integer operations; no GPU",
+  "reproduce_command": "python research_extensions/mm_pair_sports_20261028/negative_overlap_audit.py"
+}

@@ -1,0 +1,377 @@
+[
+  {
+    "dataset": "artnet-views",
+    "frozen_utc": "2026-10-27T18:28:45.395982+00:00",
+    "selection_seed": 0,
+    "confirmation_seeds": [
+      1,
+      2
+    ],
+    "source_selection_file": "rawsum_autotune_deterministic_20261028/selections/artnet-views.json",
+    "winning_configs": {
+      "full": {
+        "steps": 1000,
+        "seed": 0,
+        "lr": 0.0003,
+        "weight_decay": 0.01,
+        "warmup": 100,
+        "batch_size": 128,
+        "micro_batch_size": 32,
+        "train_budgets": [
+          4,
+          8,
+          12,
+          16
+        ],
+        "eval_budget": 12,
+        "eval_every": 50,
+        "grad_clip": 1.0,
+        "clip_policy": "common_full",
+        "feedback": {
+          "mode": "full",
+          "alpha": 1.0,
+          "stop_after": 400
+        },
+        "late_lr": {
+          "after": 400,
+          "factor": 0.1
+        },
+        "model": {},
+        "label_smoothing": 0.05,
+        "deterministic": true
+      },
+      "late_stop": {
+        "steps": 1000,
+        "seed": 0,
+        "lr": 0.0003,
+        "weight_decay": 0.01,
+        "warmup": 100,
+        "batch_size": 128,
+        "micro_batch_size": 32,
+        "train_budgets": [
+          4,
+          8,
+          12,
+          16
+        ],
+        "eval_budget": 12,
+        "eval_every": 50,
+        "grad_clip": 1.0,
+        "clip_policy": "common_full",
+        "feedback": {
+          "mode": "late_stop",
+          "alpha": 1.0,
+          "stop_after": 400
+        },
+        "late_lr": {
+          "after": 400,
+          "factor": 0.1
+        },
+        "model": {},
+        "label_smoothing": 0.05,
+        "deterministic": true
+      }
+    },
+    "seed0_matched_full_job": "artnet-views__full__lr0p0003__late0p1__s0"
+  },
+  {
+    "dataset": "tolokers-2",
+    "frozen_utc": "2026-10-27T18:30:52.084275+00:00",
+    "selection_seed": 0,
+    "confirmation_seeds": [
+      1,
+      2
+    ],
+    "source_selection_file": "rawsum_autotune_deterministic_20261028/selections/tolokers-2.json",
+    "winning_configs": {
+      "full": {
+        "steps": 1000,
+        "seed": 0,
+        "lr": 0.0003,
+        "weight_decay": 0.01,
+        "warmup": 100,
+        "batch_size": 128,
+        "micro_batch_size": 32,
+        "train_budgets": [
+          4,
+          8,
+          12,
+          16
+        ],
+        "eval_budget": 12,
+        "eval_every": 50,
+        "grad_clip": 1.0,
+        "clip_policy": "common_full",
+        "feedback": {
+          "mode": "full",
+          "alpha": 1.0,
+          "stop_after": 400
+        },
+        "late_lr": {
+          "after": 400,
+          "factor": 1.0
+        },
+        "model": {},
+        "label_smoothing": 0.05,
+        "deterministic": true
+      },
+      "late_stop": {
+        "steps": 1000,
+        "seed": 0,
+        "lr": 0.0003,
+        "weight_decay": 0.01,
+        "warmup": 100,
+        "batch_size": 128,
+        "micro_batch_size": 32,
+        "train_budgets": [
+          4,
+          8,
+          12,
+          16
+        ],
+        "eval_budget": 12,
+        "eval_every": 50,
+        "grad_clip": 1.0,
+        "clip_policy": "common_full",
+        "feedback": {
+          "mode": "late_stop",
+          "alpha": 1.0,
+          "stop_after": 400
+        },
+        "late_lr": {
+          "after": 400,
+          "factor": 1.0
+        },
+        "model": {},
+        "label_smoothing": 0.05,
+        "deterministic": true
+      }
+    },
+    "seed0_matched_full_job": "tolokers-2__full__lr0p0003__late1__s0"
+  },
+  {
+    "dataset": "computers",
+    "frozen_utc": "2026-10-27T19:51:56.274836+00:00",
+    "selection_seed": 0,
+    "confirmation_seeds": [
+      1,
+      2
+    ],
+    "source_selection_file": "rawsum_autotune_expansion_20261028/selections/computers.json",
+    "winning_configs": {
+      "full": {
+        "steps": 1000,
+        "seed": 0,
+        "lr": 0.0003,
+        "weight_decay": 0.01,
+        "warmup": 100,
+        "batch_size": 128,
+        "micro_batch_size": 32,
+        "train_budgets": [
+          4,
+          8,
+          12,
+          16
+        ],
+        "eval_budget": 12,
+        "eval_every": 50,
+        "grad_clip": 1.0,
+        "clip_policy": "common_full",
+        "feedback": {
+          "mode": "full",
+          "alpha": 1.0,
+          "stop_after": 400
+        },
+        "late_lr": {
+          "after": 400,
+          "factor": 1.0
+        },
+        "model": {},
+        "label_smoothing": 0.05,
+        "deterministic": true
+      },
+      "late_stop": {
+        "steps": 1000,
+        "seed": 0,
+        "lr": 0.0003,
+        "weight_decay": 0.01,
+        "warmup": 100,
+        "batch_size": 128,
+        "micro_batch_size": 32,
+        "train_budgets": [
+          4,
+          8,
+          12,
+          16
+        ],
+        "eval_budget": 12,
+        "eval_every": 50,
+        "grad_clip": 1.0,
+        "clip_policy": "common_full",
+        "feedback": {
+          "mode": "late_stop",
+          "alpha": 1.0,
+          "stop_after": 400
+        },
+        "late_lr": {
+          "after": 400,
+          "factor": 1.0
+        },
+        "model": {},
+        "label_smoothing": 0.05,
+        "deterministic": true
+      }
+    },
+    "seed0_matched_full_job": "computers__full__lr0p0003__late1__s0"
+  },
+  {
+    "dataset": "photo",
+    "frozen_utc": "2026-10-27T19:47:30.962845+00:00",
+    "selection_seed": 0,
+    "confirmation_seeds": [
+      1,
+      2
+    ],
+    "source_selection_file": "rawsum_autotune_expansion_20261028/selections/photo.json",
+    "winning_configs": {
+      "full": {
+        "steps": 1000,
+        "seed": 0,
+        "lr": 0.0001,
+        "weight_decay": 0.01,
+        "warmup": 100,
+        "batch_size": 128,
+        "micro_batch_size": 32,
+        "train_budgets": [
+          4,
+          8,
+          12,
+          16
+        ],
+        "eval_budget": 12,
+        "eval_every": 50,
+        "grad_clip": 1.0,
+        "clip_policy": "common_full",
+        "feedback": {
+          "mode": "full",
+          "alpha": 1.0,
+          "stop_after": 400
+        },
+        "late_lr": {
+          "after": 400,
+          "factor": 1.0
+        },
+        "model": {},
+        "label_smoothing": 0.05,
+        "deterministic": true
+      },
+      "late_stop": {
+        "steps": 1000,
+        "seed": 0,
+        "lr": 0.0001,
+        "weight_decay": 0.01,
+        "warmup": 100,
+        "batch_size": 128,
+        "micro_batch_size": 32,
+        "train_budgets": [
+          4,
+          8,
+          12,
+          16
+        ],
+        "eval_budget": 12,
+        "eval_every": 50,
+        "grad_clip": 1.0,
+        "clip_policy": "common_full",
+        "feedback": {
+          "mode": "late_stop",
+          "alpha": 1.0,
+          "stop_after": 400
+        },
+        "late_lr": {
+          "after": 400,
+          "factor": 1.0
+        },
+        "model": {},
+        "label_smoothing": 0.05,
+        "deterministic": true
+      }
+    },
+    "seed0_matched_full_job": "photo__full__lr0p0001__late1__s0"
+  },
+  {
+    "dataset": "pubmed",
+    "frozen_utc": "2026-10-27T19:49:44.451167+00:00",
+    "selection_seed": 0,
+    "confirmation_seeds": [
+      1,
+      2
+    ],
+    "source_selection_file": "rawsum_autotune_expansion_20261028/selections/pubmed.json",
+    "winning_configs": {
+      "full": {
+        "steps": 1000,
+        "seed": 0,
+        "lr": 0.0001,
+        "weight_decay": 0.01,
+        "warmup": 100,
+        "batch_size": 128,
+        "micro_batch_size": 32,
+        "train_budgets": [
+          4,
+          8,
+          12,
+          16
+        ],
+        "eval_budget": 12,
+        "eval_every": 50,
+        "grad_clip": 1.0,
+        "clip_policy": "common_full",
+        "feedback": {
+          "mode": "full",
+          "alpha": 1.0,
+          "stop_after": 400
+        },
+        "late_lr": {
+          "after": 400,
+          "factor": 1.0
+        },
+        "model": {},
+        "label_smoothing": 0.05,
+        "deterministic": true
+      },
+      "late_stop": {
+        "steps": 1000,
+        "seed": 0,
+        "lr": 0.0001,
+        "weight_decay": 0.01,
+        "warmup": 100,
+        "batch_size": 128,
+        "micro_batch_size": 32,
+        "train_budgets": [
+          4,
+          8,
+          12,
+          16
+        ],
+        "eval_budget": 12,
+        "eval_every": 50,
+        "grad_clip": 1.0,
+        "clip_policy": "common_full",
+        "feedback": {
+          "mode": "late_stop",
+          "alpha": 1.0,
+          "stop_after": 400
+        },
+        "late_lr": {
+          "after": 400,
+          "factor": 1.0
+        },
+        "model": {},
+        "label_smoothing": 0.05,
+        "deterministic": true
+      }
+    },
+    "seed0_matched_full_job": "pubmed__full__lr0p0001__late1__s0"
+  }
+]

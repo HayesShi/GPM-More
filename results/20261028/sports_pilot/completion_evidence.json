@@ -1,0 +1,28 @@
+{
+  "four_models_complete": true,
+  "campaign_wall_seconds": 2040.1230745315552,
+  "within_original_90_minute_deadline": true,
+  "fixed_weight_subgroups": {
+    "full": {
+      "n": 45557,
+      "on": 30.46069701815133,
+      "off": 30.226684969112718,
+      "on_minus_off_pp": 0.23401204903861572
+    },
+    "clean": {
+      "n": 37290,
+      "on": 29.231060278044318,
+      "off": 31.114256563489295,
+      "on_minus_off_pp": -1.8831962854449875
+    },
+    "reverse_exposed": {
+      "n": 8264,
+      "on": 35.98399519453627,
+      "off": 26.21296707228362,
+      "on_minus_off_pp": 9.771028122252638
+    }
+  },
+  "test_performance_evaluated": false,
+  "formal_main_table_modified": false,
+  "shared_gpu_lock_acquirable_after_completion": true
+}

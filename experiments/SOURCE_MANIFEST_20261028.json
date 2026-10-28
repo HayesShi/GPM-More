@@ -1,0 +1,184 @@
+{
+  "date": "2026-10-28",
+  "scope": "code export and compact measured artifacts; no new training",
+  "files": [
+    {
+      "source": "research_extensions/mm_pair_sports_20261028/baselines.py",
+      "published": "research_extensions/mm_pair_sports_20261028/baselines.py"
+    },
+    {
+      "source": "research_extensions/mm_pair_sports_20261028/finalize_analysis.py",
+      "published": "research_extensions/mm_pair_sports_20261028/finalize_analysis.py"
+    },
+    {
+      "source": "research_extensions/mm_pair_sports_20261028/model_check.py",
+      "published": "research_extensions/mm_pair_sports_20261028/model_check.py"
+    },
+    {
+      "source": "research_extensions/mm_pair_sports_20261028/negative_overlap_audit.py",
+      "published": "research_extensions/mm_pair_sports_20261028/negative_overlap_audit.py"
+    },
+    {
+      "source": "research_extensions/mm_pair_sports_20261028/pair_model.py",
+      "published": "research_extensions/mm_pair_sports_20261028/pair_model.py"
+    },
+    {
+      "source": "research_extensions/mm_pair_sports_20261028/plot_evidence.py",
+      "published": "research_extensions/mm_pair_sports_20261028/plot_evidence.py"
+    },
+    {
+      "source": "research_extensions/mm_pair_sports_20261028/prepare_data.py",
+      "published": "research_extensions/mm_pair_sports_20261028/prepare_data.py"
+    },
+    {
+      "source": "research_extensions/mm_pair_sports_20261028/run_campaign.py",
+      "published": "research_extensions/mm_pair_sports_20261028/run_campaign.py"
+    },
+    {
+      "source": "research_extensions/mm_pair_sports_20261028/sampling_mechanism.py",
+      "published": "research_extensions/mm_pair_sports_20261028/sampling_mechanism.py"
+    },
+    {
+      "source": "research_extensions/mm_pair_sports_20261028/structural_baselines.py",
+      "published": "research_extensions/mm_pair_sports_20261028/structural_baselines.py"
+    },
+    {
+      "source": "research_extensions/mm_pair_sports_20261028/structural_tie_probe.py",
+      "published": "research_extensions/mm_pair_sports_20261028/structural_tie_probe.py"
+    },
+    {
+      "source": "research_extensions/mm_pair_sports_20261028/summarize.py",
+      "published": "research_extensions/mm_pair_sports_20261028/summarize.py"
+    },
+    {
+      "source": "research_extensions/mm_pair_sports_20261028/walks.py",
+      "published": "research_extensions/mm_pair_sports_20261028/walks.py"
+    },
+    {
+      "source": "research_extensions/mm_pair_sports_20261028/model_spec.md",
+      "published": "research_extensions/mm_pair_sports_20261028/model_spec.md"
+    },
+    {
+      "source": "outputs/rawsum_computers_tuning_20261028/comparison.csv",
+      "published": "results/20261028/computers_tuning/comparison.csv"
+    },
+    {
+      "source": "outputs/rawsum_computers_tuning_20261028/verification.json",
+      "published": "results/20261028/computers_tuning/verification.json"
+    },
+    {
+      "source": "outputs/rawsum_computers_tuning_20261028/selection.json",
+      "published": "results/20261028/computers_tuning/selection.json"
+    },
+    {
+      "source": "outputs/rawsum_autotune_five_dataset_summary_20261028/selected_runs.csv",
+      "published": "results/20261028/five_dataset_tuning/selected_runs.csv"
+    },
+    {
+      "source": "outputs/rawsum_autotune_five_dataset_summary_20261028/all_trials.csv",
+      "published": "results/20261028/five_dataset_tuning/all_trials.csv"
+    },
+    {
+      "source": "outputs/rawsum_autotune_five_dataset_summary_20261028/selection_manifest.json",
+      "published": "results/20261028/five_dataset_tuning/selection_manifest.json"
+    },
+    {
+      "source": "outputs/rawsum_autotune_five_dataset_summary_20261028/selected_checkpoint_comparison.json",
+      "published": "results/20261028/five_dataset_tuning/selected_checkpoint_comparison.json"
+    },
+    {
+      "source": "outputs/mm_pair_sports_20261028/comparison.csv",
+      "published": "results/20261028/sports_pilot/comparison.csv"
+    },
+    {
+      "source": "outputs/mm_pair_sports_20261028/verified_summary.json",
+      "published": "results/20261028/sports_pilot/verified_summary.json"
+    },
+    {
+      "source": "outputs/mm_pair_sports_20261028/plan.json",
+      "published": "results/20261028/sports_pilot/plan.json"
+    },
+    {
+      "source": "outputs/mm_pair_sports_20261028/completion_evidence.json",
+      "published": "results/20261028/sports_pilot/completion_evidence.json"
+    },
+    {
+      "source": "outputs/mm_pair_sports_20261028/negative_overlap_audit.json",
+      "published": "results/20261028/sports_pilot/negative_overlap_audit.json"
+    },
+    {
+      "source": "outputs/mm_pair_sports_20261028/core_evidence.png",
+      "published": "results/20261028/sports_pilot/core_evidence.png"
+    },
+    {
+      "source": "outputs/mm_pair_sports_20261028/core_evidence.svg",
+      "published": "results/20261028/sports_pilot/core_evidence.svg"
+    },
+    {
+      "source": "outputs/mm_pair_sports_20261028/core_evidence.pdf",
+      "published": "results/20261028/sports_pilot/core_evidence.pdf"
+    },
+    {
+      "source": "outputs/mm_pair_sports_20261028/core_evidence_caption.txt",
+      "published": "results/20261028/sports_pilot/core_evidence_caption.txt"
+    },
+    {
+      "source": "outputs/mm_pair_sports_20261028/sampling_mechanism/metrics.json",
+      "published": "results/20261028/sports_pilot/sampling_mechanism/metrics.json"
+    },
+    {
+      "source": "outputs/mm_pair_sports_20261028/structural_baselines/metrics.json",
+      "published": "results/20261028/sports_pilot/structural_baselines/metrics.json"
+    },
+    {
+      "source": "outputs/mm_pair_sports_20261028/structural_tie_probe/results.json",
+      "published": "results/20261028/sports_pilot/structural_tie_probe/results.json"
+    },
+    {
+      "source": "outputs/rawsum_computers_tuning_20261028/code_snapshot/runner.py",
+      "published": "experiments/computers/runner.py"
+    },
+    {
+      "source": "outputs/rawsum_computers_tuning_20261028/code_snapshot/rawsum_model.py",
+      "published": "experiments/computers/rawsum_model.py"
+    },
+    {
+      "source": "outputs/mm_pair_sports_20261028/runs/mlp/history.jsonl",
+      "published": "results/20261028/sports_pilot/histories/mlp/history.jsonl"
+    },
+    {
+      "source": "outputs/mm_pair_sports_20261028/runs/mlp/metrics.json",
+      "published": "results/20261028/sports_pilot/histories/mlp/metrics.json"
+    },
+    {
+      "source": "outputs/mm_pair_sports_20261028/runs/pair_independent/history.jsonl",
+      "published": "results/20261028/sports_pilot/histories/pair_independent/history.jsonl"
+    },
+    {
+      "source": "outputs/mm_pair_sports_20261028/runs/pair_independent/metrics.json",
+      "published": "results/20261028/sports_pilot/histories/pair_independent/metrics.json"
+    },
+    {
+      "source": "outputs/mm_pair_sports_20261028/runs/pair_joint/fixed_weight_no_joint.json",
+      "published": "results/20261028/sports_pilot/histories/pair_joint/fixed_weight_no_joint.json"
+    },
+    {
+      "source": "outputs/mm_pair_sports_20261028/runs/pair_joint/history.jsonl",
+      "published": "results/20261028/sports_pilot/histories/pair_joint/history.jsonl"
+    },
+    {
+      "source": "outputs/mm_pair_sports_20261028/runs/pair_joint/metrics.json",
+      "published": "results/20261028/sports_pilot/histories/pair_joint/metrics.json"
+    },
+    {
+      "source": "outputs/mm_pair_sports_20261028/runs/sage/history.jsonl",
+      "published": "results/20261028/sports_pilot/histories/sage/history.jsonl"
+    },
+    {
+      "source": "outputs/mm_pair_sports_20261028/runs/sage/metrics.json",
+      "published": "results/20261028/sports_pilot/histories/sage/metrics.json"
+    }
+  ],
+  "public_entry": "experiments/computers/run.py",
+  "documentation": "One retained official-high fresh/full-feedback recipe"
+}

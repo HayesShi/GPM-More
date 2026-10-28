@@ -7,6 +7,11 @@ build/
 dist/
 data/
 runs/
+outputs/
+external/
+.runtime/
+*.log
+*.tmp
 *.pt
 *.pth
 *.npy
